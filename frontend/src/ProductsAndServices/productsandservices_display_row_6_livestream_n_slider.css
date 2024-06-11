@@ -1,0 +1,50 @@
+/* productsandservices_display_row_6_livestream_n_slider.css */
+.video_row_container{
+    display: flex;
+    flex-direction: row;
+    justify-content:start;
+    align-items: center;
+    /* margin: 0 auto; */
+    width: 90%;
+    height: 40%;
+    background-color: none;
+    padding: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+    margin-right: 0px;
+    z-index: 10;
+}
+
+.livestream_n_text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:start;
+    
+}
+
+.carousel-container_row6 {
+    background-color: aliceblue;
+    width: 1200px;
+    margin: 0px, auto;
+    color: black;
+    object-fit: contain;
+    justify-content: center;
+}
+   
+   .carousel-container_row6 img {
+    width: 250px;
+    height: 300px;
+    object-fit: contain;
+   }
+   
+   /* Optional: Additional styling for dots and arrows */
+   .slick-dots li button:before {
+    color: #333;
+   }
+   
+   .slick-next:before,
+   .slick-prev:before {
+    color: #333;
+   }

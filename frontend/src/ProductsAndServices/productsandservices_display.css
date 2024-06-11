@@ -1,0 +1,48 @@
+.productsandservices_display_container {
+    display: block;
+    flex-direction: column;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-gap: 20px;
+    /* margin:-1%; */
+    height: 2700px;
+    margin-right: 40px;
+    margin-right: 35px;
+    margin-bottom: 50px;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+    position:relative;
+}
+
+@media screen and (max-width: 600px) {
+    .productsandservices_display_container {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .productsandservices_display_container {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    }
+}
+
+
+.productsandservices_display_container_carousel{
+margin-right: 35px;
+margin-left: 35px;
+margin-top: 0px;
+position: static;
+z-index: 1;
+background-position: 80%;
+}
+
+.productsandservices_display_rows{
+    min-width: 1200px;
+    max-width: 2500px;
+    margin-left: 35px;
+    margin-right: 35px;
+    display:block;
+    z-index: 10;
+    position: absolute; /* Change this from relative to absolute. This was how i moved the products cards without moving the carousel */
+    top: 350px; /* Add this line */
+}

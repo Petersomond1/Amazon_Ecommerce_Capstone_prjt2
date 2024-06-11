@@ -1,0 +1,14 @@
+.admindashboard-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:start;
+    margin-top: 50px;
+    margin-bottom: 50px; 
+    color: #000;
+    font-family: 'Roboto', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    background-color: #fff;
+}

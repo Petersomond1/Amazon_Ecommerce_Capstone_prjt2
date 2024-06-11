@@ -1,0 +1,118 @@
+.navbarup{
+    display:flex;
+    flex-direction: row;
+    width: 100%;
+    height: 60px;
+    align-items: center;
+    position:sticky;
+    margin-top: 0px;
+    z-index: 100;
+    background-color: #070707ec;
+    /* justify-content: space-between; */
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+
+
+}
+
+.navbarup_amazon_logo {
+    background: url('https://ik.imagekit.io/amazonmondayp/amazon-image/sprite_350x.png?updatedAt=1693788045797') no-repeat -9px -50px;
+	width: 98px;
+	height: 31px;
+    margin-left: 13px;
+    margin-right: 13px;
+}
+
+.navbarup_searchbar {
+    display: flex;
+    width: 50vw;
+    flex-direction: row;
+    align-items: center;
+    position: sticky;
+    flex: 1;
+    height: 40px;
+}
+
+.searchbar_form {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: sticky;
+    flex: 1;
+}
+
+.searchbar_input {
+    /* height: 100%; */
+    width: 100%;
+    padding: 0px 10px;
+    border: none;
+    height: 40px;
+}
+
+.searchbar_select{
+    height: 105%;
+    width: 8%;
+    padding: 0px 10px;
+    background-color: #dfdbd3;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    cursor: pointer;
+    line-height: 50%;
+    text-align: center;
+}
+
+.searchbar_button{
+    width: 10%;
+    height: 44px;
+    background-color: #f0c14b;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    cursor: pointer;
+}
+
+@media (max-width: 600px) {
+    .searchbar_select {
+        width: 10%;
+    }
+
+    .searchbar_button {
+        width: 10%;
+    }
+}
+
+.searchbar_icon {
+    background-color: #f0c14b;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.searchbar_icon:hover :active {
+    background-color: #c75938;
+}
+
+.lang_flag{
+    background: url('https://ik.imagekit.io/amazonmondayp/amazon-image/usaflagiconsmall.png?updatedAt=1694091730336');
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-top: 15px;
+    position:sticky;
+}
+
+.navbarup_lang_select{
+    background-color: #0707076c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    position:sticky;
+}
+
+.navbarup_cart {
+    background: url('https://ik.imagekit.io/amazonmondayp/amazon-image/sprite_350x.png?updatedAt=1693788045797') no-repeat -9px -339px;
+    width: 40px;
+    height: 30px;
+    display: inline-block;
+    margin-left: -1px;
+    margin-right: -11px;
+  }

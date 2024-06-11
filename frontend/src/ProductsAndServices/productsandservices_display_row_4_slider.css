@@ -1,0 +1,27 @@
+/* productsandservices_display_row_4_slider.css */
+.carousel-container_row4 {
+    background-color: aliceblue;
+    width: 1649px;
+    margin: 0px auto;
+    /* margin: 30px, 20px, 20px, 20px; */
+    color: black;
+    object-fit: contain;
+    /* justify-content: center; */
+    position: relative;
+}
+   
+   .carousel-container_row4 img {
+    width: 250px;
+    height: 300px;
+    object-fit: contain;
+   }
+   
+   /* Optional: Additional styling for dots and arrows */
+   .slick-dots li button:before {
+    color: #333;
+   }
+   
+   .slick-next:before,
+   .slick-prev:before {
+    color: #333;
+   }
