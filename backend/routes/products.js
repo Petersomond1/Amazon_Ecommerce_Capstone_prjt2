@@ -10,15 +10,17 @@ const upload = multer({ dest: 'uploads/' });
 router.get('/favicon.ico', (req, res) => res.status(204));
 
 //From the admindashboard to database
-  router.post('http://localhost:5000/api/row_ids', async (req, res) => {
+  router.post('/row_ids', async (req, res) => {
     const { row1, row1_ids, row2, row2_ids, row3, row3_ids, row4, row4_ids, row5, row5_ids, row6, row6_ids } = req.body;
   
+    console.log("the data", req.body);
     try {
-      const [rows] = db.query(`
-        INSERT INTO idstofeature (row1, row1_ids, row2, row2_ids, row3, row3_ids, row4, row4_ids, row5, row5_ids, row6, row6_ids)
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
-      `, [row1, row1_ids, row2, row2_ids, row3, row3_ids, row4, row4_ids, row5, row5_ids, row6, row6_ids]);
-  
+        for (const [rowname, rowIds] of Object.entries(req.body)) {
+            if (rowname.endsWith('_ids')) continue;
+            const idskey = `${rowname}_ids`;
+            await db.query('INSER INTO rows_data VALUES (?, ?)', [rowname , JSON.stringify(req.body[idskey])]);
+        }
+     
       res.json({ message: 'Rows inserted successfully' });
     } catch (error) {
       console.error('Error inserting rows:', error);

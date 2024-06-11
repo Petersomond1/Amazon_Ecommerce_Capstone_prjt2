@@ -49,7 +49,7 @@ db.connect(error => {
     console.log('Successfully connected to the database.');
 });
 
-app.use(`${api}/products`, productsRouter);
+app.use('/api', productsRouter);
 
 
 // Error handling middleware
