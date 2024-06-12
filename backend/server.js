@@ -10,18 +10,21 @@ import bodyParser from 'body-parser';
 import multer from 'multer';
 import session from 'express-session';
 
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const upload = multer({ dest: 'uploads/' });
-const app = express();
 
+const app = express();
 const api = process.env.API_URL;
+
 app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:5000'],
     optionsSuccessStatus: 200
 }));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -31,7 +34,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: { secure: false } // set to true if your website uses HTTPS
 }));
-app.use(productsRouter);
+app.use('/api', productsRouter);
 app.use(bodyParser.json());
 
 

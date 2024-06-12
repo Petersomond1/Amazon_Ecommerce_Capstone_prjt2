@@ -7,26 +7,28 @@ const upload = multer({ dest: 'uploads/' });
 
 
 //To correct an error of favicon or cors for now
-router.get('/favicon.ico', (req, res) => res.status(204));
-
-//From the admindashboard to database
-  router.post('/row_ids', async (req, res) => {
-    const { row1, row1_ids, row2, row2_ids, row3, row3_ids, row4, row4_ids, row5, row5_ids, row6, row6_ids } = req.body;
+router.post('/api/row_ids', (req, res) => {
+    const rows = req.body.rows;
   
-    console.log("the data", req.body);
-    try {
-        for (const [rowname, rowIds] of Object.entries(req.body)) {
-            if (rowname.endsWith('_ids')) continue;
-            const idskey = `${rowname}_ids`;
-            await db.query('INSER INTO rows_data VALUES (?, ?)', [rowname , JSON.stringify(req.body[idskey])]);
+    rows.forEach(row => {
+      // Assuming row_ids is a string of comma-separated numbers
+      const row_ids = row.row_ids.split(',').map(id => id.trim()); // Split the string into an array of numbers
+  
+      // Prepare the query for inserting each id in row_ids
+      const query = 'INSERT INTO idstofeature (row_ids) VALUES ?';
+      const values = row_ids.map(id => [id]); // Map each id to an array of values for bulk insert
+  
+      connection.query(query, [values], (error, results, fields) => {
+        if (error) {
+          return console.error(error.message);
         }
-     
-      res.json({ message: 'Rows inserted successfully' });
-    } catch (error) {
-      console.error('Error inserting rows:', error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
+        console.log('Rows Inserted:', results.affectedRows);
+      });
+    });
+  
+    res.send({ message: 'Data received and processed' });
   });
+  
  
 
 

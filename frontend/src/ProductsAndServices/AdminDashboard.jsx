@@ -1,3 +1,5 @@
+// Fix for handleChange and handleSubmit
+
 import React, { useState } from "react";
 import './admindashboard-css.css';
 import axios from 'axios';
@@ -20,168 +22,100 @@ function AdminDashboard() {
     featured: ''
   });
 
+  const [formData, setFormData] = useState(Array(6).fill('')); // Initialize with 6 empty strings for 6 rows
 
-  const [formData, setFormData] = useState({
-    row1: '',
-    row1_ids: '',
-    row2: '',
-    row2_ids: '',
-    row3: '',
-    row3_ids: '',
-    row4: '',
-    row4_ids: '',
-    row5: '',
-    row5_ids: '',
-    row6: '',
-    row6_ids: ''
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (index) => (e) => {
+    const newData = [...formData];
+    newData[index] = e.target.value;
+    setFormData(newData);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const idsData = formData.map((row, index) => ({
+      id: index + 1,
+      row_ids: row
+    }));
 
-   
-    const idsData = {
-      row1: formData.row1,
-      row1_ids: formData.row1_ids.split(',').map(Number),
-      row2: formData.row2,
-      row2_ids: formData.row2_ids.split(',').map(Number),
-      row3: formData.row3,
-      row3_ids: formData.row3_ids.split(',').map(Number),
-      row4: formData.row4,
-      row4_ids: formData.row4_ids.split(',').map(Number),
-      row5: formData.row5,
-      row5_ids: formData.row5_ids.split(',').map(Number),
-      row6: formData.row6,
-      row6_ids: formData.row6_ids.split(',').map(Number),
-    };
-
-    const handleSubmit1 = async (e) => {
-      e.preventDefault();
-      console.log("result", formData);
-      console.log("this is the data", idsData);
-      try {
-        const response = await axios.post('http://localhost:5000/api/row_ids', idsData);
-        console.log('Successfully updated rows:', response.data);
-      } catch (error) {
-        if (error.response) {
-          console.error('Backend error:', error.response.data);
-          console.error('Status code:', error.response.status);
-          console.error('Headers:', error.response.headers);
-        } else if (error.request) {console.error('No response received:', error.request);
-        } else {console.error('Error:', error.message);
-        }
-      }
+    try {
+      const response = await axios.post('http://localhost:5000/api/row_ids', { rows: idsData });
+      console.log('Successfully updated rows:', response.data);
+    } catch (error) {
+      console.error('Error submitting form:', error);
     }
+  };
      
-const handleChange2 = (e) => {
-  setProduct({ ...product, [e.target.name]: e.target.value });
-};
+  const handleChange2 = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+  };
 
-const add_product_to_database = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post('http://localhost:5000/api/products', product); 
-    console.log(response.data);
-  } catch (error) {
-    console.error(error);
-  }
-};
+  const add_product_to_database = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:5000/api/products', product); 
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-const deleteProduct = async (id) => {
-  try {
-    const response = await axios.delete(`/api/products/${id}`);
-    console.log(response.data);
-  } catch (error) {
-    console.error(`HTTP error! status: ${error.response.status}`);
-  }
-};
+  const deleteProduct = async (id) => {
+    try {
+      const response = await axios.delete(`/api/products/${id}`);
+      console.log(response.data);
+    } catch (error) {
+      console.error(`HTTP error! status: ${error.response.status}`);
+    }
+  };
 
-const updateProduct = async (id, product) => {
-  try {
-    const response = await axios.put(`/api/products/${id}`, product);
-    console.log(response.data);
-  } catch (error) {
-    console.error(`HTTP error! status: ${error.response.status}`);
-  }
-};
+  const updateProduct = async (id, product) => {
+    try {
+      const response = await axios.put(`/api/products/${id}`, product);
+      console.log(response.data);
+    } catch (error) {
+      console.error(`HTTP error! status: ${error.response.status}`);
+    }
+  };
   return (
     <>
-      <form onSubmit={handleSubmit1}>
-      <div>
-        <label>Name:</label>
-        <input name="row1" value={formData.row1} onChange={handleChange} placeholder="Enter row name" />
-        <input name="row1_ids" value={formData.row1_ids} onChange={handleChange} placeholder="Comma separated numbers for row 1" />
-      </div>
-      <div>
-        <label>Name:</label>
-        <input name="row2" value={formData.row2} onChange={handleChange} placeholder="Enter row name" />
-        <input name="row2_ids" value={formData.row2_ids} onChange={handleChange} placeholder="Comma separated numbers for row 2" />
-      </div>
-      <div>
-        <label>Name:</label>
-        <input name="row3" value={formData.row3} onChange={handleChange} placeholder="Enter row name" />
-        <input name="row3_ids" value={formData.row3_ids} onChange={handleChange} placeholder="Comma separated numbers for row 3" />
-      </div>
-      <div>
-        <label>Name:</label>
-        <input name="row4" value={formData.row4} onChange={handleChange} placeholder="Enter row name" />
-        <input name="row4_ids" value={formData.row4_ids} onChange={handleChange} placeholder="Comma separated numbers for row 4" />
-      </div>
-      <div>
-        <label>Name:</label>
-        <input name="row5" value={formData.row5} onChange={handleChange} placeholder="Enter row name" />
-        <input name="row5_ids" value={formData.row5_ids} onChange={handleChange} placeholder="Comma separated numbers for row 5" />
-      </div>
-      <div>
-        <label>Name:</label>
-        <input name="row6" value={formData.row6} onChange={handleChange} placeholder="Enter row name" />
-        <input name="row6_ids" value={formData.row6_ids} onChange={handleChange} placeholder="Comma separated numbers for row 6" />
-      </div>
-      <button type="submit">Submit</button>
-    </form>
+      <form onSubmit={handleSubmit}>
+        {formData.map((_, index) => (
+          <div key={index}>
+            <label>{`Row ${index + 1} IDs:`}</label>
+            <input
+              name={`row${index + 1}_ids`}
+              value={formData[index]}
+              onChange={handleChange(index)}
+              placeholder={`Comma separated numbers for row ${index + 1}`}
+            />
+          </div>
+        ))}
+        <button type="submit">Submit</button>
+      </form>
 <br />
 <hr />
 <br />
-      <form action="http://localhost:5000/api/products" method="post" onSubmit={(e) => { e.preventDefault(); add_product_to_database(product); }}>
-               <label htmlFor="name"></label>
-               <input type="text" id="name" name="name" value={product.id} onChange={handleChange2} placeholder="name"/>
-                <label htmlFor="description"></label>
-                <input type="text" id="description" name="description" value={product.description } onChange={handleChange2} placeholder="description"/>
-                <label htmlFor="price"></label>
-                <input type="text" id="price" name="price" value={product.price || '' } onChange={handleChange2} placeholder="price"/>
-                <label htmlFor="sale_price"></label>
-                <input type="text" id="sale_price" name="sale_price" value={product.sale_price || '' } onChange={handleChange2} placeholder="sale_price"/>
-                <label htmlFor="quantity_InStock"></label>
-                <input type="text" id="quantity_InStock" name="quantity_InStock" value={1} onChange={handleChange2} placeholder="name"/>
-                <label htmlFor="image"></label>
+      <form onSubmit={add_product_to_database}>
+               <input type="text" id="name" name="name" value={product.name} onChange={handleChange2} placeholder="name"/>
+                <input type="text" id="description" name="description" value={product.description} onChange={handleChange2} placeholder="description"/>
+                <input type="text" id="price" name="price" value={product.price || ''} onChange={handleChange2} placeholder="price"/>
+                <input type="text" id="sale_price" name="sale_price" value={product.sale_price || ''} onChange={handleChange2} placeholder="sale_price"/>
+                <input type="text" id="quantity_InStock" name="quantity_InStock" value={product.quantity_InStock} onChange={handleChange2} placeholder="quantity_InStock"/>
                 <input type="text" id="image" name="image" value={product.image} onChange={handleChange2} placeholder="image"/>
-                <label htmlFor="video_image"></label>
-                <input type="text" id="video_image" name="video_image" value={product.video} onChange={handleChange2} placeholder="video_image"/>
-                <label htmlFor="category"></label>
-                <input type="text" id="category" name="category" value={product.category}onChange={handleChange2} placeholder="category"/>
-                <label htmlFor="type"></label>
+                <input type="text" id="video_image" name="video_image" value={product.video_image} onChange={handleChange2} placeholder="video_image"/>
+                <input type="text" id="category" name="category" value={product.category} onChange={handleChange2} placeholder="category"/>
                 <input type="text" id="type" name="type" value={product.type} onChange={handleChange2} placeholder="type"/>
-                <label htmlFor="ratings"></label>
                 <input type="text" id="ratings" name="ratings" value={product.ratings} onChange={handleChange2} placeholder="ratings"/>
-                <label htmlFor="reviews"></label>
                 <input type="text" id="reviews" name="reviews" value={product.reviews} onChange={handleChange2} placeholder="reviews"/>
-                <label htmlFor="prime"></label>
                 <input type="text" id="prime" name="prime" value={product.prime} onChange={handleChange2} placeholder="prime"/>
-                <label htmlFor="soldby"></label>
                 <input type="text" id="soldby" name="soldby" value={product.soldby} onChange={handleChange2} placeholder="soldby"/>
-                <label htmlFor="featured"></label>
                 <input type="text" id="featured" name="featured" value={product.featured} onChange={handleChange2} placeholder="featured"/>
-                <label htmlFor="add_product_to_database"></label>
-                <input type="submit" value='submit' className="btn"/>
-
-          </form>
+                <input type="submit" value='Submit' className="btn"/>
+      </form>
       <button type="button" onClick={() => updateProduct('product_id', product)}>Update Product</button>
       <button type="button" onClick={() => deleteProduct('product_id')}>Delete Product</button>
-      
-      </>
-   );
-  }
+    </>
+  );
+}
 
-  export default  AdminDashboard;
+export default AdminDashboard;
