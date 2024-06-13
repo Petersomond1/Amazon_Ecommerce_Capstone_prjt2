@@ -32,13 +32,14 @@ function AdminDashboard() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const idsData = formData.map((row, index) => ({
-      id: index + 1,
-      row_ids: row
-    }));
+     // Instead of mapping to an array with id and row_ids, we'll directly send row_ids as an array
+    // const idsData = formData.map((row, index) => ({
+    //   id: index + 1,
+    //   row_ids: row
+    // }));
 
     try {
-      const response = await axios.post('http://localhost:5000/api/row_ids', { rows: idsData });
+      const response = await axios.post('http://localhost:5000/api/row_ids', { rows: formData});
       console.log('Successfully updated rows:', response.data);
     } catch (error) {
       console.error('Error submitting form:', error);
