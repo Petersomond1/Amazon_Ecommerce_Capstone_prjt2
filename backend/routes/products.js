@@ -1,68 +1,18 @@
 import express from 'express';
-import {db} from '../server.js';
+import db from '../config/db.js'
 import multer from 'multer';
+import { addRowsIds, product } from '../controllers/productsController.js';
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 
 
-// router.post('/api/row_ids', (req, res) => {
-//     const rows = req.body.rows;
-  
-//     rows.forEach(row => {
-//       // Assuming row_ids is a string of comma-separated numbers
-//       const row_ids = row.row_ids.split(',').map(id => id.trim()); // Split the string into an array of numbers
-  
-//       // Prepare the query for inserting each id in row_ids
-//       const query = 'INSERT INTO idstofeature (row_ids) VALUES (?)'
-//       const values = row_ids.map(id => [id]); // Map each id to an array of values for bulk insert
-  
-//       connection.query(query, [values], (error, results, fields) => {
-//         if (error) {
-//           return console.error(error.message);
-//         }
-//         console.log('Rows Inserted:', results.affectedRows);
-//       });
-//     });
-  
-//     res.send({ message: 'Data received and processed' });
-//   });
-  
-router.post('/api/row_ids', (req, res) => {
-    const rows = req.body.rows;
-    
-    // Constructing a JSON string from the rows array
-    const jsonString = JSON.stringify(rows.map((row, index) => ({id: index + 1, row_ids: row})));
-    
-    // Using JSON_TABLE to insert multiple rows into the database
-    const query = `
-      INSERT INTO idstofeature (id, row_ids)
-      SELECT * FROM JSON_TABLE('${jsonString}', '$[*]' COLUMNS(
-        id INT PATH '$.id',
-        row_ids VARCHAR(255) PATH '$.row_ids'
-      ))
-    `;
-    
-    connection.query(query, (error, results, fields) => {
-      if (error) {
-        return res.status(500).send({ message: error.message });
-      }
-      res.send({ message: 'Data received and processed', insertedRows: results.affectedRows });
-    });
-  });
-
-
+router.post('/row_ids',addRowsIds);
+router.get('/api/products', product)
 //Ids from Admindashboard now passing to database to get/select the products for feature/display
-router.get('/api/products', (req, res) => {
-        const ids = req.query.ids.split(',').map(Number);
-        const placeholders = ids.map(() => '?').join(',');
-        const query = `SELECT * FROM products WHERE id IN (${placeholders})`;
-        db.query(query, ids, (error, results) => {
-            if (error) throw error;
-            res.json(results);
-        });
-    })
+
+
 //Insert product entered at admindashboard into database
 router.post('/api/products', (req, res) => {
         const product = req.body;
@@ -358,3 +308,7 @@ router.get(`/*`, (req, res) => {
 });
 
  export default router;
+
+
+
+
