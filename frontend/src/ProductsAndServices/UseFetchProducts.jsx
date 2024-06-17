@@ -1,16 +1,18 @@
-// import {useEffect } from 'react';
+import { useQuery } from "react-query";
+import axios from "axios";
 
-// const UseFetchProducts = () => {
-//     useEffect(() => {
-//         fetch('http://localhost:5000/api/products')
-//             .then(response => response.json())
-//             .then(data => {
-//                 setProducts(data);
-//             })
-//             .catch(error => console.error('Error fetching products:', error));
-//     }, []); // Removed setProducts from the dependency array to avoid infinite loop
+const getDataProducts = async () => {
+  const result = await axios.get("http://localhost:5000/api/products");
+  return result.data;
+};
 
-//     return products;
-// }
+const UseFetchProducts = () => {
+  const { isLoading, error, data } = useQuery("repoData", getDataProducts);
 
-// export default UseFetchProducts;
+  if (isLoading) return "Loading...";
+  if (error) return `Error: ${error.message}`;
+
+  return data;
+};
+
+export default UseFetchProducts;

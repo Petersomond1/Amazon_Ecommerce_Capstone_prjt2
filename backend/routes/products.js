@@ -8,7 +8,7 @@ import { product, get_single_product, get_all_products_useeffect, get_all_produc
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-router.get('/api/products', product)
+router.get('/products', product)
 
 //From clientside to get products from database
 router.get('/api/products/:id', get_single_product);
