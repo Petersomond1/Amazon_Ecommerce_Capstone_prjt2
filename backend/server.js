@@ -30,7 +30,10 @@ const api = process.env.API_URL;
 // Middleware configurations
 app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:5000'],
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
 app.use(express.static(path.join(__dirname, 'public')));

@@ -1,109 +1,39 @@
 import express from 'express';
 import db from '../config/db.js'
 import multer from 'multer';
-import { product } from '../controllers/productsController.js';
+import { product, get_single_product, get_all_products_useeffect, get_all_products, put_update_cart, remove_product, post_product_database, delete_product_database, put_update_database  } from '../controllers/productsController.js';
+
+
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
 router.get('/api/products', product)
 
-    //From clientside to get products from database
-    router.get('/api/products/:id', (req, res) => {
-        const sql = 'SELECT * FROM products WHERE id = ?';
-        db.query(sql, req.params.id, (error, result) => {
-          if (error) throw error;
-          res.json(result);
-        });
-      });
+//From clientside to get products from database
+router.get('/api/products/:id', get_single_product);
 
 // GET allproducts of useeffect endpoint1
-router.get('/api/allproducts', (req, res) => {
-    const query = 'SELECT * FROM products';
-    console.log('allproducts', query)
-
-    db.query(query, (error, results) => {
-        if (error) {
-          console.error('Error querying database:', error);
-          res.status(500).json({ error: 'Error querying database' });
-          return;
-        }
-        res.json(results);
-      });
-});
+router.get('/api/allproducts', get_all_products_useeffect);
 
 // GET all products endpoint1
-router.get('/', (req, res) => {
-    db.query("SELECT * FROM products", (error, results) => {
-        if (error) {
-            console.error('Error querying database:', error);
-            res.status(500).json({ error: 'Error querying database' });
-            return;
-        }
-        res.json(results);
-    });
-});
+router.get('/', get_all_products);
 
 
-// PUT /api/products/:id
-router.put('/api/products/:id', (req, res) => {
-    const { id } = req.params;
-    const quantity_InStock = req.body.quantity_InStock;
-    const cart = req.session.cart || [];
-    const existingProductIndex = cart.findIndex(p => p.id === id);
-    if (existingProductIndex >= 0) {
-        cart[existingProductIndex].quantity_InStock += quantity_InStock;
-    }
-    req.session.cart = cart;
-    const total = calculateTotal(cart, req);
-    res.json({cart: cart, total: total});
-});
+// PUT /api/products/:id &  unsure purpose
+router.put('/api/products/:id', put_update_cart);
 
 // DELETE /api/remove_product
-router.delete('/api/remove_product', (req, res) => {
-    const id = req.body.id;
-    const cart = req.session.cart;
-    for (let i = 0; i < cart.length; i++) {
-        if (cart[i].id === id) {
-            cart.splice(i, 1);
-            break;
-        }
-    }
-    req.session.cart = cart;
-    const total = calculateTotal(cart, req);
-    res.json({cart: cart, total: total});
-});
+router.delete('/api/remove_product', remove_product);
 
 //Insert product entered at admindashboard into database
-router.post('/api/products', (req, res) => {
-    const product = req.body;
-    const query = 'INSERT INTO products SET ?';
-    db.query(query, product, (error, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-});
+router.post('/api/products', post_product_database);
 
 //From admindashboard to database
-router.delete('/api/products/:id', (req, res) => {
-    const { id } = req.params;
-    const query = 'DELETE FROM products WHERE id = ?';
-    db.query(query, id, (error, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-});
+router.delete('/api/products/:id', delete_product_database);
 
 ////From admindashboard to database
-router.put('/api/products/:id', (req, res) => {
-    const { id } = req.params;
-    const product = req.body;
-    const query = 'UPDATE products SET ? WHERE id = ?';
-    db.query(query, [product, id], (error, result) => {
-        if (error) throw error;
-        res.json(result);
-    });
-})
+router.put('/api/products/:id', put_update_database);
 
  export default router;
 

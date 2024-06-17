@@ -1,17 +1,13 @@
 import express from 'express';
+import { payment, checkout } from '../controllers/payment.js';
 const router = express.Router();
 
 
 
 router.route('/api/payment')
-    .get((req, res) => {
-        res.json({message: 'Payment completed'});
-    });
+    .get(payment);
 
 router.route('/api/checkout')
-    .get((req, res) => {
-        const { cart, total } = req.body;
-        res.json({cart: cart, total: total, localStorage: true, message: 'Checkout completed'});
-    });
+    .get(checkout);
 
 export default router;
