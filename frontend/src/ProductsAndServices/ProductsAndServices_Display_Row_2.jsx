@@ -22,7 +22,7 @@ const ProductsAndServices_Display_Row_2 = () => {
   return (
     <>
       <div className="productsandservices_row2_container">
-        <div className="productsandservices_display_row_2_card">
+        {/* <div className="productsandservices_display_row_2_card">
           {products?.map((product) => (
             <div key={product?.id} className="page__row">
               <Link
@@ -45,7 +45,7 @@ const ProductsAndServices_Display_Row_2 = () => {
               </Link>
             </div>
           ))}
-        </div>
+        </div> */}
       </div>
     </>
   );

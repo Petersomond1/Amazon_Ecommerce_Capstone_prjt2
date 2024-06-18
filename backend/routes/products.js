@@ -1,7 +1,11 @@
 import express from 'express';
 import db from '../config/db.js'
 import multer from 'multer';
-import { product, get_single_product, get_all_products_useeffect, get_all_products, put_update_cart, remove_product, post_product_database, delete_product_database, put_update_database  } from '../controllers/productsController.js';
+import { product, get_single_product, 
+    get_all_products_useeffect, get_all_products, 
+    put_update_cart, remove_product, post_product_database, 
+    delete_product_database, put_update_database  
+} from '../controllers/productsController.js';
 
 
 

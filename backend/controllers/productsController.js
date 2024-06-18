@@ -3,13 +3,23 @@ import db from '../config/db.js'
 
 
 export const product =  async (req, res) => {
-    const ids = req.query.ids.split(',').map(Number);
-    const placeholders = ids.map(() => '?').join(',');
-    const query = `SELECT * FROM products WHERE id IN (${placeholders})`;
-    db.query(query, ids, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+    try {
+        const que = "SELECT * from idstofeature ;";
+
+        const result = await db.query(que);
+        const allRowIds = result[0].flatMap(row => row.row_ids);
+        console.log("All row_ids: ", allRowIds);
+
+        // Construct the placeholders for the SQL query
+        const placeholders = allRowIds.map(() => '?').join(',');
+        const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
+
+        // Use spread operator to pass the values
+        const data = await db.query(qu, [...allRowIds]);
+        console.log("here is my data ", data);
+    } catch (error) {
+        console.log("the problem is here : ", error.message)
+    }
 }
 
 export const get_single_product =  async (req, res) => {
