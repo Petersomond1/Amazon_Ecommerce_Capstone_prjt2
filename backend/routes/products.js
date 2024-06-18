@@ -1,14 +1,18 @@
 import express from 'express';
 import db from '../config/db.js'
 import multer from 'multer';
-import { product, get_single_product, get_all_products_useeffect, get_all_products, put_update_cart, remove_product, post_product_database, delete_product_database, put_update_database  } from '../controllers/productsController.js';
+import { product, get_single_product, 
+    get_all_products_useeffect, get_all_products, 
+    put_update_cart, remove_product, post_product_database, 
+    delete_product_database, put_update_database  
+} from '../controllers/productsController.js';
 
 
 
 const router = express.Router();
 const upload = multer({ dest: 'uploads/' });
 
-router.get('/api/products', product)
+router.get('/products', product)
 
 //From clientside to get products from database
 router.get('/api/products/:id', get_single_product);

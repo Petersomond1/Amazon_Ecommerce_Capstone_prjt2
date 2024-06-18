@@ -50,10 +50,10 @@ app.use(session({
 
 // Route configurations
 app.use('/api', productsRouter);
-app.use('/api', cart);
-app.use('/api', orders);
-app.use('/api', users);
-app.use('/api', payment);
+// app.use('/api', cart);
+// app.use('/api', orders);
+// app.use('/api', users);
+// app.use('/api', payment);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
