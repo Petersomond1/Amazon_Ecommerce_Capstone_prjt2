@@ -6,29 +6,7 @@ import "./productsandservices_display_row_1_carousel.css";
 import { Link } from "react-router-dom";
 
 export const ProductsAndServices_Display_Row_1_Carousel = () => {
-  const row1_IdsRef = useRef(
-    JSON.parse(localStorage.getItem("row1_ids")) || []
-  );
-  console.log(row1_IdsRef);
-  const [products, setProducts] = useState([]);
-  console.log(products);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios(
-          `http://localhost:5000/api/products?ids=${row1_IdsRef.current.join(
-            ","
-          )}`
-        );
-        setProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+ 
 
   const divStyle = {
     justifyContent: "center",

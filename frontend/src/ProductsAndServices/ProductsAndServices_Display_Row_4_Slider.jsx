@@ -7,22 +7,7 @@ import './productsandservices_display_row_3_slider.css';
 
 const ProductsAndServices_Display_Row_4_Slider = () => {
 
-  const row4_IdsRef = useRef(JSON.parse(localStorage.getItem('row4_ids')) || []);
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios(`http://localhost:5000/api/products?ids=${row4_IdsRef.current.join(',')}`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
-
+  
   const sliderSettings = {
     dots: true,
     infinite: true,

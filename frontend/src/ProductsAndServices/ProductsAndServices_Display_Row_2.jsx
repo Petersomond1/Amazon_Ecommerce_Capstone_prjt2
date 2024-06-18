@@ -5,20 +5,7 @@ import "./productsandservices_display_row_2.css";
 import UseFetchProducts from "./UseFetchProducts";
 
 const ProductsAndServices_Display_Row_2 = () => {
-  const row2_IdsRef = useRef(
-    JSON.parse(localStorage.getItem("row2_ids")) || []
-  );
-  const [products, setProducts] = useState([]);
-
-  const fetchedData = UseFetchProducts();
-  useEffect(() => {
-    if (fetchedData) {
-      // Assuming fetchedData is an array of products
-      setProducts(fetchedData);
-    }
-    console.log("here it is ", products);
-  }, [fetchedData]);
-
+  
   return (
     <>
       <div className="productsandservices_row2_container">

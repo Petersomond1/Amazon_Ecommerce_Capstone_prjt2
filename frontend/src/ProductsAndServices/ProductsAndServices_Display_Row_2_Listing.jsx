@@ -8,21 +8,7 @@ import {Link} from 'react-router-dom';
 
 const ProductsAndServices_Display_Row_2_Listing = () => {
     
-  const row2_IdsRef = useRef(JSON.parse(localStorage.getItem('row2_ids')) || []);
-  const [products, setProducts] = useState([]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios(`http://localhost:5000/api/products?ids=${row2_IdsRef.current.join(',')}`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  
   
   
       return (

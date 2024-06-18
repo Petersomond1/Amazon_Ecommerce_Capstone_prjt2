@@ -2,23 +2,29 @@ import db from '../config/db.js'
 
 
 
-export const product =  async (req, res) => {
+export const product = async (req, res) => {
     try {
-        const que = "SELECT * from idstofeature ;";
+        const que = "SELECT * from idstofeature;";
 
         const result = await db.query(que);
-        const allRowIds = result[0].flatMap(row => row.row_ids);
-        console.log("All row_ids: ", allRowIds);
+        // Parse the row_ids strings into arrays and then flatten them
+        const RowIds = result[0].flatMap(row => row.row_ids);
+        console.log("All row_ids: ", RowIds);
+        const allRowIds = result[0]
+            .flatMap(row => JSON.parse(row.row_ids));
 
+        // console.log("All row_ids: ", allRowIds);
+        
         // Construct the placeholders for the SQL query
         const placeholders = allRowIds.map(() => '?').join(',');
-        const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
+const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
 
         // Use spread operator to pass the values
         const data = await db.query(qu, [...allRowIds]);
-        console.log("here is my data ", data);
+        // console.log("here is my data ", data);
+        res.status(200).json([data, RowIds]);
     } catch (error) {
-        console.log("the problem is here : ", error.message)
+        console.log("the problem is here: ", error.message);
     }
 }
 

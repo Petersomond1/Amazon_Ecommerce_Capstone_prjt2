@@ -8,23 +8,7 @@ import {Link} from 'react-router-dom';
 // Make this be a slider listing carousel products
 
   const ProductsAndServices_Display_Row_1_Carousel_Listing = () => {
-    const row1_IdsRef = useRef(JSON.parse(localStorage.getItem('row1_ids')) || []);
-    const [products, setProducts] = useState([]);
-  
-    useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          const response = await axios(`http://localhost:5000/api/products?ids=${row1_IdsRef.current.join(',')}`);
-          setProducts(response.data);
-          console.log(response.data)
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  
-      fetchProducts();
-    }, []);
-  
+   
       return (
 
     <>

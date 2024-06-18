@@ -2,22 +2,7 @@
     import './productsandservices_display_row_3_slider.css';
     
     const ProductsAndServices_Row3_Listing = () => {
-      const row3_IdsRef = useRef(JSON.parse(localStorage.getItem('row3_ids')) || []);
-      const [products, setProducts] = useState([]);
-    
-      useEffect(() => {
-        const fetchProducts = async () => {
-          try {
-            const response = await axios(`http://localhost:5000/api/products?ids=${row3_IdsRef.current.join(',')}`);
-            setProducts(response.data);
-          } catch (error) {
-            console.error(error);
-          }
-        };
-    
-        fetchProducts();
-      }, []);
- 
+      
      return (
        <div className='container'>
 {products.map((product) => {
