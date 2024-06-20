@@ -7,13 +7,11 @@ import ProductsAndServices_Display_Row_4_Slider from "./ProductsAndServices_Disp
 import ProductsAndServices_Display_Row_5 from "./ProductsAndServices_Display_Row_5";
 import ProductsAndServices_Display_Row_6_Livestream_n_Slider from "./ProductsAndServices_Display_Row_6_Livestream_n_Slider";
 import { Link } from "react-router-dom";
-import UseFetchProducts from "./UseFetchProducts";
+import useFetchProducts from "./useFetchProducts.js";
 
-export const ProductsAndServices_Display_Connect = () => {
-  const fetchedData = UseFetchProducts();
+export const ProductsAndServices_Display_Connect = async () => {
+  const fetchedData = await useFetchProducts();
   console.log("fetchedData", fetchedData);
-  console.log("fetchedData[1]", fetchedData[1]);
-
 //   const finalForm =fetchedData[1].map(subArray => fetchedData[0][0].filter( product => subArray.includes(product.id)))
 // console.log("finalForm", finalForm)
   

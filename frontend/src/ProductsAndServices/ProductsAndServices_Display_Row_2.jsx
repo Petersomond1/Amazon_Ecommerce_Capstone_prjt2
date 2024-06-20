@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./productsandservices_display_row_2.css";
-import UseFetchProducts from "./UseFetchProducts";
+
 
 const ProductsAndServices_Display_Row_2 = () => {
   
