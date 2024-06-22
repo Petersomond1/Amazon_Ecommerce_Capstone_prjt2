@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React from 'react';
+// import axios from 'axios';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import './productsandservices_display_row_3_slider.css';
 
-const ProductsAndServices_Display_Row_4_Slider = () => {
+const ProductsAndServices_Display_Row_4_Slider = ({ products }) => {
 
   
   const sliderSettings = {

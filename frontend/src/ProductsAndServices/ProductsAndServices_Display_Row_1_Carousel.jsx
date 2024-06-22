@@ -1,11 +1,11 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import React from "react";
+// import axios from "axios";
 import { Slide } from "react-slideshow-image";
 import "react-slideshow-image/dist/styles.css";
 import "./productsandservices_display_row_1_carousel.css";
 import { Link } from "react-router-dom";
 
-export const ProductsAndServices_Display_Row_1_Carousel = () => {
+export const ProductsAndServices_Display_Row_1_Carousel = ({ products }) => {
  
 
   const divStyle = {
@@ -53,7 +53,7 @@ export const ProductsAndServices_Display_Row_1_Carousel = () => {
             className="divStyle"
             style={{ ...divStyle, backgroundImage: `url(${product.image})` }}
           >
-            <Link to="/ProductsAndServices_Display_Row_1_Carousel_Listing">
+            <Link to={`/ProductsAndServices_SingleDisplay/${product.id}`}>
               <span className="spanStyle" style={spanStyle}>
                 {" "}
                 {product.name}

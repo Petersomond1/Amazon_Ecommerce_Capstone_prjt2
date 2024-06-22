@@ -9,7 +9,7 @@ export const product = async (req, res) => {
         const result = await db.query(que);
         // Parse the row_ids strings into arrays and then flatten them
         const RowIds = result[0].flatMap(row => row.row_ids);
-        console.log("All row_ids: ", RowIds);
+        console.log("RowIds in All row_ids @ /products: ", RowIds);
         const allRowIds = result[0]
             .flatMap(row => JSON.parse(row.row_ids));
 
@@ -17,11 +17,14 @@ export const product = async (req, res) => {
         
         // Construct the placeholders for the SQL query
         const placeholders = allRowIds.map(() => '?').join(',');
+        console.log("placeholders in All row_ids @ /products : ", placeholders);
+
+        // Create the SQL query
 const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
 
         // Use spread operator to pass the values
         const data = await db.query(qu, [...allRowIds]);
-        // console.log("here is my data ", data);
+        console.log("data @ /products", data);
         res.status(200).json([data, RowIds]);
     } catch (error) {
         console.log("the problem is here: ", error.message);

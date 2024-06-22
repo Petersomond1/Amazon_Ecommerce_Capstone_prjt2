@@ -1,8 +1,15 @@
-import React, {useEffect, useState } from 'react';
-    import './productsandservices_display_row_3_slider.css';
+import React from 'react';
+import './productsandservices_display_row_3_slider.css';
+import {Link} from 'react-router-dom';
+import {useFetchFilteredProductsByRow} from "./useFetchProducts.js";
+
     
-    const ProductsAndServices_Row4_Listing = () => {
-     
+    const ProductsAndServices_Display_Row_4_Listing = () => {
+      const { data: products, isLoading, error } = useFetchFilteredProductsByRow(0); // Assuming rowId for Row 1 is 0
+
+      if (isLoading) return <div>Loading...</div>;
+      if (error) return <div>An error occurred: {error.message}</div>;
+    
 
    return (
      <div className='container'>
@@ -27,4 +34,4 @@ import React, {useEffect, useState } from 'react';
 )
 }
 
-export default ProductsAndServices_Row4_Listing;
+export default ProductsAndServices_Display_Row_4_Listing;

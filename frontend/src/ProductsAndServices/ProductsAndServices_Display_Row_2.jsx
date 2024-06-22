@@ -1,21 +1,25 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import React from "react";
+// import axios from "axios";
 import { Link } from "react-router-dom";
 import "./productsandservices_display_row_2.css";
 
 
-const ProductsAndServices_Display_Row_2 = () => {
+const ProductsAndServices_Display_Row_2 = ({ products }) => {
   
   return (
     <>
       <div className="productsandservices_row2_container">
-        {/* <div className="productsandservices_display_row_2_card">
+        <div className="productsandservices_display_row_2_card">
           {products?.map((product) => (
             <div key={product?.id} className="page__row">
-              <Link
-                to={`/ProductsAndServices_Display_Row_2_Listing"/${product?.category}`}
+              {/* <Link
+                to={`/ProductsAndServices_Display_Row_2_Listing/${product?.category}`}
                 key={product?.category}
-              >
+              > */}
+              <Link
+                to={`/ProductsAndServices_CategoryDisplay/${product?.category}`} 
+                key={product?.category}
+              > 
                 <div className="container_row_2_cardsx4">
                   <div key={product?.id}>
                     <div className="box_single">
@@ -32,7 +36,7 @@ const ProductsAndServices_Display_Row_2 = () => {
               </Link>
             </div>
           ))}
-        </div> */}
+        </div>
       </div>
     </>
   );

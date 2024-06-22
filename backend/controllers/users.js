@@ -17,7 +17,7 @@ export const addRowsIds = async (req, res) => {
 
             // Execute the update query
             await db.query(updateQuery, [JSON.stringify(numbersArray), id]);
-            console.log(`Updated row with id ${id}`);
+            console.log(`Updated row with id from controllers/users: ${id}`);
         }));
 
         res.status(200).json({ message: "Data updated" });

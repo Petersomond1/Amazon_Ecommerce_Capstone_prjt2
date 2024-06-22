@@ -1,25 +1,26 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React from 'react';
+// import { useEffect, useState, useRef } from 'react';
+// import axios from 'axios';
 import './productsandservices_display_row_5.css';
 
-const ProductsAndServices_Display_Row_5 = () => {
+const ProductsAndServices_Display_Row_5 = ({ products }) => {
    
 
-  const row5_IdsRef = useRef(JSON.parse(localStorage.getItem('row5_ids')) || []);
-  const [products, setProducts] = useState([]);
+  // const row5_IdsRef = useRef(JSON.parse(localStorage.getItem('row5_ids')) || []);
+  // const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios(`http://localhost:5000/api/products?ids=${row5_IdsRef.current.join(',')}`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const response = await axios(`http://localhost:5000/api/products?ids=${row5_IdsRef.current.join(',')}`);
+  //       setProducts(response.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
 
-    fetchProducts();
-  }, []); 
+  //   fetchProducts();
+  // }, []); 
 
  return (
         <div className='container'>
