@@ -90,7 +90,7 @@ function AllProductsAndServices_Display() {
                 <input type="submit" value='Add to Cart' className="btn" onClick={(e) => { e.preventDefault(); addToCart(product); }}/>
             </form>
           {/* <button onClick={() => addToCart(product)}>Add to CART</button> */}
-          <button onClick={() => deleteProduct(product.id)}>Delete Product</button>
+          {/* <button onClick={() => deleteProduct(product.id)}>Delete Product</button> */}
         </div>
       ))}
       </div>

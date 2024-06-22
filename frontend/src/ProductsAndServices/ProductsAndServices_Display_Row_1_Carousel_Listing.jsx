@@ -1,35 +1,23 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React from 'react';
 import './productsandservices_display_row_1_carousel.css';
 import './productsandservices_display_row_2.css'
 import {Link} from 'react-router-dom';
-
+import {useFetchFilteredProductsByRow} from "./useFetchProducts.js";
+// import {useFetchProducts} from "./useFetchProducts.js";
 
 // Make this be a slider listing carousel products
 
   const ProductsAndServices_Display_Row_1_Carousel_Listing = () => {
-    const row1_IdsRef = useRef(JSON.parse(localStorage.getItem('row1_ids')) || []);
-    const [products, setProducts] = useState([]);
-  
-    useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          const response = await axios(`http://localhost:5000/api/products?ids=${row1_IdsRef.current.join(',')}`);
-          setProducts(response.data);
-          console.log(response.data)
-        } catch (error) {
-          console.error(error);
-        }
-      };
-  
-      fetchProducts();
-    }, []);
-  
+    const { data: products, isLoading, error } = useFetchFilteredProductsByRow(0); // Assuming rowId for Row 1 is 0
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>An error occurred: {error.message}</div>;
+
       return (
 
     <>
         <div className='container'>
-{products.map((product) => {
+    {products.map((product) => {
     return (
       <div key={product.id}>
         <Link to={`/ProductsAndServices_SingleDisplay/${product.id}`} key={product.id}>

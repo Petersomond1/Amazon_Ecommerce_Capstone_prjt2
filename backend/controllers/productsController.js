@@ -1,31 +1,125 @@
 import db from '../config/db.js'
 
-export const addRowsIds = async (req, res) => {
-    const rows = req.body;
 
 
-    const updateQuery = "UPDATE idstofeature SET numbers = ? WHERE id = ?;";
-    for (let i = 0; i < rows.length; i++) {
-        const id = i+1; 
-        const numbers = rows[i];
+export const product = async (req, res) => {
+    try {
+        const que = "SELECT * from idstofeature;";
 
-        await db.query(updateQuery, [numbers, id]);
-        console.log("query:", i, "was done for id:", id);
+        const result = await db.query(que);
+        // Parse the row_ids strings into arrays and then flatten them
+        const RowIds = result[0].flatMap(row => row.row_ids);
+        console.log("RowIds in All row_ids @ /products: ", RowIds);
+        const allRowIds = result[0]
+            .flatMap(row => JSON.parse(row.row_ids));
+
+        // console.log("All row_ids: ", allRowIds);
+        
+        // Construct the placeholders for the SQL query
+        const placeholders = allRowIds.map(() => '?').join(',');
+        console.log("placeholders in All row_ids @ /products : ", placeholders);
+
+        // Create the SQL query
+const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
+
+        // Use spread operator to pass the values
+        const data = await db.query(qu, [...allRowIds]);
+        console.log("data @ /products", data);
+        res.status(200).json([data, RowIds]);
+    } catch (error) {
+        console.log("the problem is here: ", error.message);
+    }
+}
+
+export const get_single_product =  async (req, res) => {
+        const sql = 'SELECT * FROM products WHERE id = ?';
+        db.query(sql, req.params.id, (error, result) => {
+          if (error) throw error;
+          res.json(result);
+        });
+      }
+
+export const get_all_products_useeffect =  async (req, res) => {
+        const query = 'SELECT * FROM products';
+        console.log('allproducts', query)
+    
+        db.query(query, (error, results) => {
+            if (error) {
+              console.error('Error querying database:', error);
+              res.status(500).json({ error: 'Error querying database' });
+              return;
+            }
+            res.json(results);
+          });
     }
 
-    res.status(200).json({ message: "Data updated" });
-}
+export const get_all_products =  async (req, res) => {
+        db.query("SELECT * FROM products", (error, results) => {
+            if (error) {
+                console.error('Error querying database:', error);
+                res.status(500).json({ error: 'Error querying database' });
+                return;
+            }
+            res.json(results);
+        });
+    }
+
+//unsure purpose
+export const put_update_cart =  async (req, res) => {
+        const { id } = req.params;
+        const quantity_InStock = req.body.quantity_InStock;
+        const cart = req.session.cart || [];
+        const existingProductIndex = cart.findIndex(p => p.id === id);
+        if (existingProductIndex >= 0) {
+            cart[existingProductIndex].quantity_InStock += quantity_InStock;
+        }
+        req.session.cart = cart;
+        const total = calculateTotal(cart, req);
+        res.json({cart: cart, total: total});
+    }
+
+export const remove_product =  async (req, res) => {
+        const id = req.body.id;
+        const cart = req.session.cart;
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].id === id) {
+                cart.splice(i, 1);
+                break;
+            }
+        }
+        req.session.cart = cart;
+        const total = calculateTotal(cart, req);
+        res.json({cart: cart, total: total});
+    }
 
 
-export const product =  async (req, res) => {
-    const ids = req.query.ids.split(',').map(Number);
-    const placeholders = ids.map(() => '?').join(',');
-    const query = `SELECT * FROM products WHERE id IN (${placeholders})`;
-    db.query(query, ids, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
-}
+export const post_product_database =  async (req, res) => {
+        const product = req.body;
+        const query = 'INSERT INTO products SET ?';
+        db.query(query, product, (error, result) => {
+            if (error) throw error;
+            res.json(result);
+        });
+    } 
+
+export const delete_product_database =  async (req, res) => {
+        const { id } = req.params;
+        const query = 'DELETE FROM products WHERE id = ?';
+        db.query(query, id, (error, result) => {
+            if (error) throw error;
+            res.json(result);
+        });
+    }
+
+export const put_update_database =  async (req, res) => {
+        const { id } = req.params;
+        const product = req.body;
+        const query = 'UPDATE products SET ? WHERE id = ?';
+        db.query(query, [product, id], (error, result) => {
+            if (error) throw error;
+            res.json(result);
+        });
+    }
 
 export const name =  async (req, res) =>{
     

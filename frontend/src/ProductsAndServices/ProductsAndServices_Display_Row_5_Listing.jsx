@@ -1,16 +1,23 @@
-    import React, {useEffect, useState } from 'react';
-    import './productsandservices_display_row_5_cardsx10.css';
+    import React from 'react';
+    // import {useEffect, useState } from 'react';
+    import './productsandservices_display_row_5.css';
+    import {Link} from 'react-router-dom';
+    import {useFetchFilteredProductsByRow} from "./useFetchProducts.js";
     
-    const ProductsAndServices_Row5_Listing = () => {
-        const products = UseFetchProducts();
-        const [selectedProducts, setSelectedProducts] = useState([]);
+    const ProductsAndServices_Display_Row_5_Listing = () => {
+      const { data: products, isLoading, error } = useFetchFilteredProductsByRow(0); // Assuming rowId for Row 1 is 0
+
+      if (isLoading) return <div>Loading...</div>;
+      if (error) return <div>An error occurred: {error.message}</div>;
     
-        useEffect(() => {
-            if (products && row5productIds) {
-                const filteredProducts = products.filter(product => row5productIds.includes(product.id));
-                setSelectedProducts(filteredProducts);
-            }
-        }, [products, row5productIds]);
+        // const products = UseFetchProducts();
+        // const [selectedProducts, setSelectedProducts] = useState([]);
+        // useEffect(() => {
+        //     if (products && row5productIds) {
+        //         const filteredProducts = products.filter(product => row5productIds.includes(product.id));
+        //         setSelectedProducts(filteredProducts);
+        //     }
+        // }, [products, row5productIds]);
 
    return (
     <>
@@ -36,4 +43,4 @@
  
 )
 }
-export default ProductsAndServices_Row5_Listing
+export default ProductsAndServices_Display_Row_5_Listing

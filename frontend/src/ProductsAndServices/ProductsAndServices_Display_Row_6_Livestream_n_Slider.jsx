@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
+import React from 'react';
+// import { useEffect, useState, useRef } from 'react';
+// import axios from 'axios';
 import YouTube from "react-youtube";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
@@ -7,24 +8,24 @@ import 'slick-carousel/slick/slick-theme.css';
 import './productsandservices_display_row_6_livestream_n_slider.css';
 
 
-function ProductsAndServices_Display_Row_6_Livestream_n_Slider() {
+function ProductsAndServices_Display_Row_6_Livestream_n_Slider({ products }) {
   
-    const row6_IdsRef = useRef(JSON.parse(localStorage.getItem('row6_ids')) || []);
-    const [products, setProducts] = useState([]);
-    const [row6videoIds, setRow6VideoIds] = useState([]);
+    // const row6_IdsRef = useRef(JSON.parse(localStorage.getItem('row6_ids')) || []);
+    // const [products, setProducts] = useState([]);
+    // const [row6videoIds, setRow6VideoIds] = useState([]);
   
-    useEffect(() => {
-      const fetchProducts = async () => {
-        try {
-          const response = await axios(`http://localhost:5000/api/products?ids=${row6_IdsRef.current.join(',')}`);
-          setProducts(response.data);
-        } catch (error) {
-          console.error(error);
-        }
-      };
+    // useEffect(() => {
+    //   const fetchProducts = async () => {
+    //     try {
+    //       const response = await axios(`http://localhost:5000/api/products?ids=${row6_IdsRef.current.join(',')}`);
+    //       setProducts(response.data);
+    //     } catch (error) {
+    //       console.error(error);
+    //     }
+    //   };
   
-      fetchProducts();
-    }, []); 
+    //   fetchProducts();
+    // }, []); 
 
   const onPlayerReady = (event) => {
     const player = event.target;
@@ -37,7 +38,8 @@ function ProductsAndServices_Display_Row_6_Livestream_n_Slider() {
       player.pauseVideo();
     }
   };
-
+//  const row6videoIds = products.map((product) => product.videoId);
+  const row6videoIds = true;
   const options = {
     height: "400",
     width: "400",
