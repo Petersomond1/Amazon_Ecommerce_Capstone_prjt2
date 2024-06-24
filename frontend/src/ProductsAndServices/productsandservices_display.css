@@ -4,7 +4,7 @@
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     grid-gap: 20px;
     /* margin:-1%; */
-    height: 2700px;
+    height: 3050px; /* This to adjust overall display height  */
     margin-right: 40px;
     margin-right: 35px;
     margin-bottom: 50px;

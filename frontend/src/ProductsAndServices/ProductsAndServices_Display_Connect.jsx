@@ -47,7 +47,9 @@ export const ProductsAndServices_Display_Connect = () => {
       <div className="productsandservices_display_rows">
         <ProductsAndServices_Display_Row_2 products={filteredProductsByRow_2} />
         <br />
+        <Link to={`/ProductsAndServices_CategoryDisplay/:category`}> 
         <ProductsAndServices_Display_Row_3_Slider products={filteredProductsByRow_3} />
+        </Link>
         <br />
         <ProductsAndServices_Display_Row_4_Slider products={filteredProductsByRow_4} />
         <br />
