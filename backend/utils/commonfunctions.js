@@ -1,3 +1,5 @@
+import db from '../config/db.js';
+
 export async function calculateTotal() {
     const query = 'SELECT SUM(total) as total FROM cart';
     const result = await new Promise((resolve, reject) => {

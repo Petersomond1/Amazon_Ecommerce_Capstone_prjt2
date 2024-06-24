@@ -12,7 +12,7 @@ const router = express.Router();
 
 
 // add_to_cart POST from AllProductsAndServices_Display to cart
-router.post('/api/add_to_cart',add_to_cart);
+router.post('/add_to_cart/:id',add_to_cart);
 
 router.route('/api/cart')
     .post(insert_into_cart)

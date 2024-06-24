@@ -4,24 +4,29 @@ import db from '../config/db.js';
 
 
 export const add_to_cart = async (req, res, next) => {
-    const product = createProduct(req); 
+    // const product = createProduct(req); 
+console.log("req.body", req.body)
+    // product.video_image = product.video_image || null;
+    // product.type = product.type || null;
 
-    product.video_image = product.video_image || null;
-    product.type = product.type || null;
+    // const isProductAlreadyInCart = await isProductInCart(product.id);
 
-    const isProductAlreadyInCart = await isProductInCart(product.id);
+    // if (isProductAlreadyInCart) {
+    //     const query = 'UPDATE cart SET cart = cart + ? WHERE products_ids = ?';
+    //     await db.query(query, [product.cart, product.id]);
+    // } else {
 
-    if (isProductAlreadyInCart) {
-        const query = 'UPDATE cart SET cart = cart + ? WHERE products_ids = ?';
-        await db.query(query, [product.cart, product.id]);
-    } else {
+    try {
+        const product = req.body;
         const query = 'INSERT INTO cart (products_ids, cart, price) VALUES (?,?,?)';
-        await db.query(query, [product.id, product.cart, product.sale_price || product.price]);
+        await db.query(query, [req.body.id, req.body.cart, req.body.sale_price || req.body.price]);
+    res.json({product: product,});
     }
+catch (error) {
+        console.error("An error occurred while adding to cart:", error);
+    }
+    // const total = await calculateTotal();
 
-    const total = await calculateTotal();
-
-    res.json({product: product, total: total});
 }
 
 export const insert_into_cart  = async (req, res, next) => {
