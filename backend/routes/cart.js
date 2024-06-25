@@ -1,5 +1,15 @@
 import express from 'express';
-import { add_to_cart, get_cart, insert_into_cart, get_everything_from_cart, update_quantity_in_cart, delete_from_cart, update_cart_from_order, update_product_quantity_in_cart, updates_status_of_product_in_cart } from '../controllers/cart.js';
+import {
+    add_to_cart,
+    get_cart,
+    insert_into_cart,
+    get_everything_from_cart,
+    update_quantity_in_cart,
+    delete_from_cart,
+    update_cart_from_order,
+    update_product_quantity_in_cart,
+    updates_status_of_product_in_cart
+} from '../controllers/cart.js';
 
 const router = express.Router();
 
@@ -16,9 +26,7 @@ router.route('/api/cart/:id')
     .delete(delete_from_cart)
     .post(update_cart_from_order);
 
-router.route('/api/update_quantity_in_cart')
-    .put(update_product_quantity_in_cart);
-
+router.put('/api/update_quantity_in_cart', update_product_quantity_in_cart);
 router.post('/api/cart/:id/order', updates_status_of_product_in_cart);
 
 export default router;

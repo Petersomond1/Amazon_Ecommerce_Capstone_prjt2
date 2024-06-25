@@ -3,10 +3,10 @@ import db from '../config/db.js'
 import multer from 'multer';
 import { product, get_single_product, 
     get_all_products_useeffect, get_all_products, 
-    put_update_cart, remove_product, post_product_database, 
+    post_product_database, remove_product,
     delete_product_database, put_update_database  
 } from '../controllers/productsController.js';
-
+// put_update_cart,  
 
 
 const router = express.Router();
@@ -24,8 +24,8 @@ router.get('/api/allproducts', get_all_products_useeffect);
 router.get('/', get_all_products);
 
 
-// PUT /api/products/:id &  unsure purpose
-router.put('/api/products/:id', put_update_cart);
+// // PUT /api/products/:id &  unsure purpose
+// router.put('/api/products/:id', put_update_cart);
 
 // DELETE /api/remove_product
 router.delete('/api/remove_product', remove_product);

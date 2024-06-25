@@ -22,7 +22,44 @@ export const add_to_cart = async (req, res, next) => {
     }
 };
 
-export const insert_into_cart = add_to_cart;
+export const insert_into_cart = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const quantity_InStock = req.body.quantity_InStock;
+        const cart = req.session.cart || [];
+        const existingProductIndex = cart.findIndex(p => p.id === id);
+
+        if (existingProductIndex >= 0) {
+            cart[existingProductIndex].quantity_InStock += quantity_InStock;
+        }
+
+        req.session.cart = cart;
+        const total = calculateTotal(cart, req);
+        res.json({ cart: cart, total: total });
+    } catch (error) {
+        console.error("An error occurred while inserting into cart:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+export const remove_product = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const cart = req.session.cart;
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].id === id) {
+                cart.splice(i, 1);
+                break;
+            }
+        }
+        req.session.cart = cart;
+        const total = calculateTotal(cart, req);
+        res.json({ cart: cart, total: total });
+    } catch (error) {
+        console.error("An error occurred while removing product from cart:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 export const get_cart = async (req, res, next) => {
     try {
