@@ -10,22 +10,6 @@ import './productsandservices_display_row_6_livestream_n_slider.css';
 
 function ProductsAndServices_Display_Row_6_Livestream_n_Slider({ products }) {
   
-    // const row6_IdsRef = useRef(JSON.parse(localStorage.getItem('row6_ids')) || []);
-    // const [products, setProducts] = useState([]);
-    // const [row6videoIds, setRow6VideoIds] = useState([]);
-  
-    // useEffect(() => {
-    //   const fetchProducts = async () => {
-    //     try {
-    //       const response = await axios(`http://localhost:5000/api/products?ids=${row6_IdsRef.current.join(',')}`);
-    //       setProducts(response.data);
-    //     } catch (error) {
-    //       console.error(error);
-    //     }
-    //   };
-  
-    //   fetchProducts();
-    // }, []); 
 
   const onPlayerReady = (event) => {
     const player = event.target;
@@ -87,9 +71,9 @@ function ProductsAndServices_Display_Row_6_Livestream_n_Slider({ products }) {
         <Slider {...sliderSettings}>
         {products.map((product) => (
     <div key={product.id}>
-        <p>Text1</p>
+        <p>{product?.name}</p>
         <img src={product.image} alt={product.name}  />
-        <p>Text2</p>
+        <p>lowest prices ${product.price}</p>
     </div>
 ))}
         </Slider>

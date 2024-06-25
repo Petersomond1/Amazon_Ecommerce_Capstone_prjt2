@@ -12,15 +12,11 @@ const ProductsAndServices_Display_Row_2 = ({ products }) => {
         <div className="productsandservices_display_row_2_card">
           {products?.map((product) => (
             <div key={product?.id} className="page__row">
-              {/* <Link
-                to={`/ProductsAndServices_Display_Row_2_Listing/${product?.category}`}
-                key={product?.category}
-              > */}
               <Link
                 to={`/ProductsAndServices_CategoryDisplay/${product?.category}`} 
                 key={product?.category}
               > 
-                <div className="container_row_2_cardsx4">
+                {/* <div className="container_row_2_cardsx4"> */}
                   <div key={product?.id}>
                     <div className="box_single">
                       <div className="content">
@@ -32,7 +28,7 @@ const ProductsAndServices_Display_Row_2 = ({ products }) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                {/* </div> */}
               </Link>
             </div>
           ))}

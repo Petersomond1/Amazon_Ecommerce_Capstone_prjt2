@@ -9,7 +9,7 @@ export const product = async (req, res) => {
         const result = await db.query(que);
         // Parse the row_ids strings into arrays and then flatten them
         const RowIds = result[0].flatMap(row => row.row_ids);
-        console.log("RowIds in All row_ids @ /products: ", RowIds);
+        // console.log("RowIds in All row_ids @ /products: ", RowIds);
         const allRowIds = result[0]
             .flatMap(row => JSON.parse(row.row_ids));
 
@@ -17,19 +17,38 @@ export const product = async (req, res) => {
         
         // Construct the placeholders for the SQL query
         const placeholders = allRowIds.map(() => '?').join(',');
-        console.log("placeholders in All row_ids @ /products : ", placeholders);
+        // console.log("placeholders in All row_ids @ /products : ", placeholders);
 
         // Create the SQL query
 const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
 
         // Use spread operator to pass the values
         const data = await db.query(qu, [...allRowIds]);
-        console.log("data @ /products", data);
         res.status(200).json([data, RowIds]);
     } catch (error) {
         console.log("the problem is here: ", error.message);
     }
 }
+
+
+export const remove_product = async (req, res) => {
+    try {
+        const id = req.body.id;
+        const cart = req.session.cart;
+        for (let i = 0; i < cart.length; i++) {
+            if (cart[i].id === id) {
+                cart.splice(i, 1);
+                break;
+            }
+        }
+        req.session.cart = cart;
+        const total = calculateTotal(cart, req);
+        res.json({ cart: cart, total: total });
+    } catch (error) {
+        console.error("An error occurred while removing product from cart:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
 
 export const get_single_product =  async (req, res) => {
         const sql = 'SELECT * FROM products WHERE id = ?';
@@ -41,7 +60,7 @@ export const get_single_product =  async (req, res) => {
 
 export const get_all_products_useeffect =  async (req, res) => {
         const query = 'SELECT * FROM products';
-        console.log('allproducts', query)
+        // console.log('allproducts', query)
     
         db.query(query, (error, results) => {
             if (error) {
@@ -64,33 +83,7 @@ export const get_all_products =  async (req, res) => {
         });
     }
 
-//unsure purpose
-export const put_update_cart =  async (req, res) => {
-        const { id } = req.params;
-        const quantity_InStock = req.body.quantity_InStock;
-        const cart = req.session.cart || [];
-        const existingProductIndex = cart.findIndex(p => p.id === id);
-        if (existingProductIndex >= 0) {
-            cart[existingProductIndex].quantity_InStock += quantity_InStock;
-        }
-        req.session.cart = cart;
-        const total = calculateTotal(cart, req);
-        res.json({cart: cart, total: total});
-    }
 
-export const remove_product =  async (req, res) => {
-        const id = req.body.id;
-        const cart = req.session.cart;
-        for (let i = 0; i < cart.length; i++) {
-            if (cart[i].id === id) {
-                cart.splice(i, 1);
-                break;
-            }
-        }
-        req.session.cart = cart;
-        const total = calculateTotal(cart, req);
-        res.json({cart: cart, total: total});
-    }
 
 
 export const post_product_database =  async (req, res) => {
