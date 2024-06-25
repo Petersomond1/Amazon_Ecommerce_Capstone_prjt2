@@ -63,7 +63,7 @@ export const get_all_products =  async (req, res) => {
         });
     }
 
-//unsure purpose
+//unsure of purpose, where it is used and location
 export const put_update_cart =  async (req, res) => {
         const { id } = req.params;
         const quantity_InStock = req.body.quantity_InStock;

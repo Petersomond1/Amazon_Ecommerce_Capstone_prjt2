@@ -1,45 +1,36 @@
 import db from '../config/db.js';
 
-export async function calculateTotal() {
-    const query = 'SELECT SUM(total) as total FROM cart';
-    const result = await new Promise((resolve, reject) => {
-        db.query(query, (error, results) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve(results);
-            }
-        });
-    });
-    return result[0].total;
-}
-
 export function createProduct(req) {
     return {
-        id: req.body.id,
-        name: req.body.name,
-        description: req.body.description,
-        price: req.body.price,
-        sale_price: req.body.sale_price,
-        cart: req.body.cart,  //in cart
-        quantity_InStock: req.body.quantity_InStock,
-        image: req.body.image,
-        video_image: req.body.video_image,
-        category: req.body.category,
-        type: req.body.type,
-        ratings: req.body.ratings,
-        reviews: req.body.reviews,
-        prime: req.body.prime,
-        soldby: req.body.soldby,
-        featured: req.body.featured,
+      id: req.body.product.id,
+      name: req.body.product.name,
+      description: req.body.product.description,
+      price: req.body.product.price,
+      sale_price: req.body.product.sale_price,
+      cart: req.body.product.cart, // in cart
+      quantity_InStock: req.body.product.quantity_InStock,
+      image: req.body.product.image,
+      video_image: req.body.product.video_image,
+      category: req.body.product.category,
+      type: req.body.product.type,
+      ratings: req.body.product.ratings,
+      reviews: req.body.product.reviews,
+      prime: req.body.product.prime,
+      soldby: req.body.product.soldby,
+      featured: req.body.product.featured,
     };
-}
+  }
 
 // Check if a product is already in the cart in the database
-export async function isProductInCart(id) {
-    const query = 'SELECT * FROM cart WHERE products_ids = ?';
-    const result = await db.query(query, [id]);
-    const rows = Array.isArray(result) ? result : [result];
+export const isProductInCart = async (id) => {
+    const query = 'SELECT * FROM cart WHERE id = ?';
+    const [rows] = await db.query(query, [id]);
     return rows.length > 0;
-}
+};
 
+
+export const calculateTotal = async () => {
+    const query = 'SELECT SUM(price * quantity_in_stock) AS total FROM cart';
+    const [rows] = await db.query(query);
+    return rows[0].total;
+};
