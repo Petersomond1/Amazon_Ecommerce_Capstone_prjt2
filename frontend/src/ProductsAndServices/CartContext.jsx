@@ -14,12 +14,15 @@ export const CartProvider = ({ children }) => {
     const fetchCartAndTotalFromBackend = async () => {
         try {
             const response = await axios.get('/api/cart', { withCredentials: true });
-            console.log('response at cartContext:', response);
+
+            console.log('Response FCATFB Headers:', response.headers);
+            console.log('Response FCATFB Data:', response.data);
+
             if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
                 const data = response.data;
-                console.log('data at cartContext:', data);
+                console.log('Response2 FCATFB Data:', data);
                 setCart(data.cart);
-                setTotal(data.total);
+                setTotal(data.total || 0); 
             } else {
                 throw new Error('Response is not in JSON format');
             }
@@ -35,16 +38,16 @@ export const CartProvider = ({ children }) => {
     };
 
     const updateQuantityInCart = async (id, quantity) => {
-        await axios.put(`/api/cart/${id}`, { quantity_InStock: quantity }, { withCredentials: true });
+        await axios.put(`/api/cart/${id}`, { quantity_in_stock: quantity }, { withCredentials: true });
         setCart(prevCart => {
-            const updatedCart = prevCart.map(product => product.id === id ? { ...product, quantity_InStock: quantity } : product);
+            const updatedCart = prevCart.map(product => product.id === id ? { ...product, quantity_in_stock: quantity } : product);
             return updatedCart;
         });
         updateTotal();
     };
 
     const updateTotal = () => {
-        const newTotal = cart.reduce((acc, item) => acc + item.price * item.quantity_InStock, 0);
+        const newTotal = cart.reduce((acc, item) => acc + item.price * item.quantity_in_stock, 0);
         setTotal(newTotal);
     };
 

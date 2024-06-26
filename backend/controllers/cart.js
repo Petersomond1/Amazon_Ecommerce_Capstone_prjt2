@@ -1,7 +1,7 @@
 import { createProduct, isProductInCart, calculateTotal } from '../utils/commonfunctions.js';
 import db from '../config/db.js';
 
-export const add_to_cart = async (req, res, next) => {
+export const add_to_cart = async (req, res) => {
     try {
         const product = createProduct(req);
         const isProductAlreadyInCart = await isProductInCart(product.id);
@@ -25,20 +25,40 @@ export const add_to_cart = async (req, res, next) => {
 export const insert_into_cart = async (req, res) => {
     try {
         const { id } = req.params;
-        const quantity_InStock = req.body.quantity_InStock;
+        const quantity_InStock = req.body.quantity_in_stock;
         const cart = req.session.cart || [];
         const existingProductIndex = cart.findIndex(p => p.id === id);
 
         if (existingProductIndex >= 0) {
-            cart[existingProductIndex].quantity_InStock += quantity_InStock;
+            cart[existingProductIndex].quantity_in_stock += quantity_InStock;
+        } else {
+            const product = createProduct(req);
+            cart.push({ ...product, quantity_in_stock: quantity_InStock });
         }
 
         req.session.cart = cart;
-        const total = calculateTotal(cart, req);
+        const total = await calculateTotal(cart);
         res.json({ cart: cart, total: total });
     } catch (error) {
         console.error("An error occurred while inserting into cart:", error);
         res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+export const get_cart = async (req, res) => {
+    try {
+        const query = 'SELECT * FROM cart';
+        const [cartItems] = await db.query(query);
+        const total = await calculateTotal();
+
+        console.log('Cart Items at get_cart:', cartItems);
+        console.log('Total get_cart:', total);
+
+        res.json({ cart: cartItems, total });
+    } catch (error) {
+        console.error('An error occurred while fetching the cart:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 };
 
@@ -53,7 +73,7 @@ export const remove_product = async (req, res) => {
             }
         }
         req.session.cart = cart;
-        const total = calculateTotal(cart, req);
+        const total = await calculateTotal(cart);
         res.json({ cart: cart, total: total });
     } catch (error) {
         console.error("An error occurred while removing product from cart:", error);
@@ -61,19 +81,7 @@ export const remove_product = async (req, res) => {
     }
 };
 
-export const get_cart = async (req, res, next) => {
-    try {
-        const query = 'SELECT * FROM cart';
-        const [cartItems] = await db.query(query);
-        const total = await calculateTotal();
-        res.json({ cart: cartItems, total });
-    } catch (error) {
-        console.error('An error occurred while fetching the cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
-
-export const get_everything_from_cart = async (req, res, next) => {
+export const get_everything_from_cart = async (req, res) => {
     try {
         const { id } = req.params;
         const query = 'SELECT * FROM cart WHERE id = ?';
@@ -85,11 +93,12 @@ export const get_everything_from_cart = async (req, res, next) => {
     }
 };
 
-export const update_quantity_in_cart = async (req, res, next) => {
+export const update_quantity_in_cart = async (req, res) => {
     try {
         const { id } = req.params;
-        const query = 'UPDATE cart SET ? WHERE id = ?';
-        const [result] = await db.query(query, [req.body, id]);
+        const { quantity_in_stock } = req.body;
+        const query = 'UPDATE cart SET quantity_in_stock = ? WHERE id = ?';
+        const [result] = await db.query(query, [quantity_in_stock, id]);
         res.json(result);
     } catch (error) {
         console.error('An error occurred while updating the cart:', error);
@@ -97,7 +106,7 @@ export const update_quantity_in_cart = async (req, res, next) => {
     }
 };
 
-export const delete_from_cart = async (req, res, next) => {
+export const delete_from_cart = async (req, res) => {
     try {
         const { id } = req.params;
         const query = 'DELETE FROM cart WHERE id = ?';
@@ -109,7 +118,7 @@ export const delete_from_cart = async (req, res, next) => {
     }
 };
 
-export const update_cart_from_order = async (req, res, next) => {
+export const update_cart_from_order = async (req, res) => {
     try {
         const { id } = req.params;
         const query = 'UPDATE cart SET status = "ordered" WHERE id = ?';
@@ -121,11 +130,11 @@ export const update_cart_from_order = async (req, res, next) => {
     }
 };
 
-export const update_product_quantity_in_cart = async (req, res, next) => {
+export const update_product_quantity_in_cart = async (req, res) => {
     try {
-        const { id, cart } = req.body;
-        const query = 'UPDATE products SET quantity_InStock = ? WHERE id = ?';
-        const [result] = await db.query(query, [cart, id]);
+        const { id, quantity_in_stock } = req.body;
+        const query = 'UPDATE cart SET quantity_in_stock = ? WHERE id = ?';
+        const [result] = await db.query(query, [quantity_in_stock, id]);
         res.json({ success: true });
     } catch (error) {
         console.error('An error occurred while updating product quantity in cart:', error);
@@ -133,7 +142,7 @@ export const update_product_quantity_in_cart = async (req, res, next) => {
     }
 };
 
-export const updates_status_of_product_in_cart = async (req, res, next) => {
+export const updates_status_of_product_in_cart = async (req, res) => {
     try {
         const { id } = req.params;
         const query = 'UPDATE cart SET status = "ordered" WHERE id = ?';

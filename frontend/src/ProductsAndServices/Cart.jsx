@@ -1,11 +1,36 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CartContext } from './CartContext.jsx';
 import './cart.css';
+import { useQuery } from 'react-query';
+import axios from 'axios';
 
 function Cart() {
-    const { cart, removeFromCart, total, updateQuantityInCart } = useContext(CartContext);
+    const { cart, setCart, removeFromCart, total, setTotal, updateQuantityInCart } = useContext(CartContext);
     const navigate = useNavigate();
+
+    const getCart = async () => {
+        const response = await axios.get("http://localhost:5000/api/cart");
+        return response.data;
+    };
+
+    const { data, status } = useQuery("cart", getCart, {
+        onSuccess: (data) => {
+            console.log('Cart Data:', data);
+            console.log('Cart Data Cart:', data.cart);
+            console.log('Cart Data Total:', data.total);
+            setCart(data.cart);
+            setTotal((data.total).number || 0); // Ensure total is a number
+        }
+    });
+
+    useEffect(() => {
+        if (status === 'error') {
+            console.error('Error fetching cart:', data);
+        }
+    }, [status, data]);
+
+    console.log('Cart Data:', cart);
 
     const handleInc = (event, id) => {
         event.preventDefault();
@@ -34,7 +59,7 @@ function Cart() {
     };
 
     let content;
-console.log('cart at Cart', cart);
+
     if (!cart || cart.length === 0) {
         content = <div style={{ color: 'black' }}>Cart is Empty</div>;
     } else {
@@ -79,7 +104,7 @@ console.log('cart at Cart', cart);
                         <h1 className="ac">Order Summary</h1>
                         <div className="ad">
                             <span className="ae">Products {cart.length}</span>
-                            <span className="af">${total.toFixed(2)}</span>
+                            <span className="af">${(total || 0).toFixed(2)}</span> {/* Ensure total is a number */}
                         </div>
                         <div>
                             <label className="ag">Shipping</label>
@@ -95,7 +120,7 @@ console.log('cart at Cart', cart);
                         <div className="am">
                             <div className="an">
                                 <span>Total cost</span>
-                                <span>${(total + 10).toFixed(2)}</span>
+                                <span>${((total || 0) + 10).toFixed(2)}</span> {/* Ensure total is a number */}
                             </div>
                             <button onClick={() => navigate('/Login?redirect=/api/checkouttoshipping')} className="ao">
                                 CheckoutToShipping
