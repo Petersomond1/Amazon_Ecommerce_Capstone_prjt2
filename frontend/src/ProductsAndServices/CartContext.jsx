@@ -15,14 +15,10 @@ export const CartProvider = ({ children }) => {
         try {
             const response = await axios.get('/api/cart', { withCredentials: true });
 
-            console.log('Response FCATFB Headers:', response.headers);
-            console.log('Response FCATFB Data:', response.data);
-
             if (response.headers['content-type'] && response.headers['content-type'].includes('application/json')) {
                 const data = response.data;
-                console.log('Response2 FCATFB Data:', data);
                 setCart(data.cart);
-                setTotal(data.total || 0); 
+                setTotal((data.total).number || 0); 
             } else {
                 throw new Error('Response is not in JSON format');
             }

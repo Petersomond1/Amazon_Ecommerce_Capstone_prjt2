@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 
 function Cart() {
-    const { cart, setCart, removeFromCart, total, setTotal, updateQuantityInCart } = useContext(CartContext);
+    const { cart, setCart, total, setTotal, removeFromCart, updateQuantityInCart, fetchCartAndTotalFromBackend } = useContext(CartContext);
     const navigate = useNavigate();
 
     const getCart = async () => {
@@ -20,7 +20,8 @@ function Cart() {
             console.log('Cart Data Cart:', data.cart);
             console.log('Cart Data Total:', data.total);
             setCart(data.cart);
-            setTotal((data.total).number || 0); // Ensure total is a number
+            const totalValue = Number(data.total);
+            setTotal(isNaN(totalValue) ? 0 : totalValue); // Ensure total is a number
         }
     });
 
