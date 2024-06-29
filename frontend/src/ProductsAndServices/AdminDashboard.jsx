@@ -37,14 +37,16 @@ function AdminDashboard() {
     //   id: index + 1,
     //   row_ids: row
     // }));
-    console.log("here is array", formData);
-    console.log("here is json", { formData });
+
+
+    // console.log("here is array", formData);
+    // console.log("here is json", { formData });
     try {
       const response = await axios.post(
         "http://localhost:5000/api/row_ids",
         formData
       );
-      console.log("Successfully updated rows:", response.data);
+      // console.log("Successfully updated rows:", response.data);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -61,7 +63,7 @@ function AdminDashboard() {
         "http://localhost:5000/api/products",
         product
       );
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -70,7 +72,7 @@ function AdminDashboard() {
   const deleteProduct = async (id) => {
     try {
       const response = await axios.delete(`/api/products/${id}`);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error(`HTTP error! status: ${error.response.status}`);
     }
@@ -79,7 +81,7 @@ function AdminDashboard() {
   const updateProduct = async (id, product) => {
     try {
       const response = await axios.put(`/api/products/${id}`, product);
-      console.log(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error(`HTTP error! status: ${error.response.status}`);
     }

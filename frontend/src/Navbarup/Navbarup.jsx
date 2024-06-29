@@ -1,14 +1,15 @@
 import Searchbar from './Searchbar';
 import './navbarup.css';
-import React, { useContext } from 'react';
+import React from 'react';
 import { BsGeoAlt } from "react-icons/bs";
 import { CartContext } from '../ProductsAndServices/CartContext.jsx';
 import { Link } from 'react-router-dom';
+import { useContext } from 'react';
 
 function Navbarup() {
     const { cart } = useContext(CartContext);
     const onSearch = (keyword) => {
-        console.log(`Searching for ${keyword}`);
+        // console.log(`Searching for ${keyword}`);
     };
 
     return (
@@ -56,7 +57,6 @@ function Navbarup() {
                     <div style={{ display: 'flex', flexDirection: 'row', marginTop: '10px' }}>
                         <div style={{ display: 'block', marginLeft: '5px', marginRight: '15px' }}>
                             <span className='navbarup_cart'>{cart?.length?? 0}</span>
-                            {console.log(cart)};
                         </div>
                         <span style={{ marginTop: '15px' }}>Cart</span>
                     </div>

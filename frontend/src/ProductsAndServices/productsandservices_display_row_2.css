@@ -62,7 +62,11 @@
     height: 245px;
     /* object-fit: contain; */
   }
-
+  .product-image {
+    width: 245px;
+    height: 245px;
+    object-fit: cover; /* This ensures the image covers the area without losing its aspect ratio */
+  }
 
   
   .page__row {

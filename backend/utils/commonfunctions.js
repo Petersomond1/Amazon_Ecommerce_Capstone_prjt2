@@ -1,30 +1,30 @@
 import db from '../config/db.js';
 
-export function createProduct(req) {
-    return {
-        id: req.body.product.id,
-        name: req.body.product.name,
-        description: req.body.product.description,
-        price: req.body.product.price,
-        sale_price: req.body.product.sale_price,
-        cart: req.body.product.cart,
-        quantity_in_stock: req.body.product.quantity_in_stock,
-        image: req.body.product.image,
-        video_image: req.body.product.video_image,
-        category: req.body.product.category,
-        type: req.body.product.type,
-        ratings: req.body.product.ratings,
-        reviews: req.body.product.reviews,
-        prime: req.body.product.prime,
-        soldby: req.body.product.soldby,
-        featured: req.body.product.featured,
-    };
-}
+export const createProduct = (req) => {
+  const product = req.body.product || req.body;
+  return {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    sale_price: product.sale_price,
+    quantity_in_stock: product.quantity_in_stock,
+    image: product.image,
+    video_image: product.video_image,
+    category: product.category,
+    type: product.type,
+    ratings: product.ratings,
+    reviews: product.reviews,
+    prime: product.prime,
+    soldby: product.soldby,
+    featured: product.featured
+  };
+};
 
 export const isProductInCart = async (id) => {
-    const query = 'SELECT * FROM cart WHERE id = ?';
-    const [rows] = await db.query(query, [id]);
-    return rows.length > 0;
+  const query = 'SELECT * FROM cart WHERE id = ?';
+  const [rows] = await db.query(query, [id]);
+  return rows.length > 0;
 };
 
 export const calculateTotal = async () => {
@@ -32,3 +32,25 @@ export const calculateTotal = async () => {
   const [rows] = await db.query(query);
   return rows[0].total;
 };
+
+
+// const addProductToCart = () => {
+//   const product = {
+//     id: '123',
+//     name: 'Product Name',
+//     description: 'Product Description',
+//     price: 19.99,
+//     sale_price: 15.99,
+//     quantity_in_stock: 1,
+//     image: 'path/to/image',
+//     video_image: 'path/to/video_image',
+//     category: 'Category',
+//     type: 'Type',
+//     ratings: 4.5,
+//     reviews: 10,
+//     prime: true,
+//     soldby: 'Seller Name',
+//     featured: false
+//   };
+
+//   addToCart(product);

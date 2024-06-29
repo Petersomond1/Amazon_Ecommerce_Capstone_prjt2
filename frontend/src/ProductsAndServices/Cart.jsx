@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { CartContext } from './CartContext.jsx';
 import './cart.css';
 import { useQuery } from 'react-query';
@@ -8,6 +8,7 @@ import axios from 'axios';
 function Cart() {
     const { cart, setCart, total, setTotal, removeFromCart, updateQuantityInCart, fetchCartAndTotalFromBackend } = useContext(CartContext);
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const getCart = async () => {
         const response = await axios.get("http://localhost:5000/api/cart");
@@ -16,12 +17,10 @@ function Cart() {
 
     const { data, status } = useQuery("cart", getCart, {
         onSuccess: (data) => {
-            console.log('Cart Data:', data);
-            console.log('Cart Data Cart:', data.cart);
-            console.log('Cart Data Total:', data.total);
+            // console.log('Cart Data:', data);
             setCart(data.cart);
             const totalValue = Number(data.total);
-            setTotal(isNaN(totalValue) ? 0 : totalValue); // Ensure total is a number
+            setTotal(isNaN(totalValue) ? 0 : totalValue);
         }
     });
 
@@ -31,33 +30,33 @@ function Cart() {
         }
     }, [status, data]);
 
-    console.log('Cart Data:', cart);
+    // const handleInc = async (event, id) => {
+    //     event.preventDefault();
+    //     const product = cart.find(product => product.id === id);
+    //     if (product) {
+    //         await updateQuantityInCart(id, product.quantity_in_stock + 1);
+    //     }
+    // };
 
-    const handleInc = (event, id) => {
-        event.preventDefault();
-        const item = cart.find(item => item.id === id);
-        if (item) {
-            updateQuantityInCart(id, item.quantity_in_stock + 1);
-        }
-    };
+    // const handleDec = async (event, id) => {
+    //     event.preventDefault();
+    //     const product = cart.find(product => product.id === id);
+    //     if (product && product.quantity_in_stock > 1) {
+    //         await updateQuantityInCart(id, product.quantity_in_stock - 1);
+    //     }
+    // };
 
-    const handleDec = (event, id) => {
-        event.preventDefault();
-        const item = cart.find(item => item.id === id);
-        if (item && item.quantity_in_stock > 1) {
-            updateQuantityInCart(id, item.quantity_in_stock - 1);
-        }
-    };
+    // const handleRemove = async (event, id) => {
+    //     event.preventDefault();
+    //     await removeFromCart(id);
+    // };
 
-    const handleRemove = async (event, id) => {
-        event.preventDefault();
-        removeFromCart(id);
-    };
-
-    const handleChangeQuantity = (event, itemId) => {
-        const newQuantity = parseInt(event.target.value);
-        updateQuantityInCart(itemId, newQuantity);
-    };
+    // const handleChangeQuantity = async (event, id) => {
+    //     const newQuantity = parseInt(event.target.value);
+    //     if (newQuantity > 0) {
+    //         await updateQuantityInCart(id, newQuantity);
+    //     }
+    // };
 
     let content;
 
@@ -92,20 +91,20 @@ function Cart() {
                                 </div>
                                 <div className="r">
                                     <button className="s" onClick={(event) => handleDec(event, product.id)}>-</button>
-                                    <input className="t" type="text" value={product.quantity_in_stock} readOnly />
+                                    <input className="t" type="text" value={product.quantity_in_stock} onChange={(event) => handleChangeQuantity(event, product.id)} />
                                     <button className="u" onClick={(event) => handleInc(event, product.id)}>+</button>
                                 </div>
                                 <div className="x">${product.price}</div>
                                 <span className="y">${(product.price * product.quantity_in_stock).toFixed(2)}</span>
                             </div>
                         ))}
-                        <Link to={'/products'} className="z"> Continue Shopping </Link>
+                        <Link to={'/'} className="z"> Continue Shopping </Link>
                     </div>
                     <div id="summary" className="ab">
                         <h1 className="ac">Order Summary</h1>
                         <div className="ad">
                             <span className="ae">Products {cart.length}</span>
-                            <span className="af">${(total || 0).toFixed(2)}</span> {/* Ensure total is a number */}
+                            <span className="af">${(total || 0).toFixed(2)}</span>
                         </div>
                         <div>
                             <label className="ag">Shipping</label>
@@ -114,30 +113,22 @@ function Cart() {
                             </select>
                         </div>
                         <div className="ai">
-                            <label htmlFor="promo" className="aj">Promo Code</label>
-                            <input type="text" id="promo" placeholder="Enter your code" className="ak" />
+                            <label className="ag">Promo Code</label>
+                            <input id="promo-code" placeholder="Enter your code" className="aj"></input>
+                            <button className="al">Apply</button>
                         </div>
-                        <button className="al">Apply</button>
-                        <div className="am">
-                            <div className="an">
-                                <span>Total cost</span>
-                                <span>${((total || 0) + 10).toFixed(2)}</span> {/* Ensure total is a number */}
-                            </div>
-                            <button onClick={() => navigate('/Login?redirect=/api/checkouttoshipping')} className="ao">
-                                CheckoutToShipping
-                            </button>
+                        <div className="ak">
+                            <span className="al">Total Cost</span>
+                            <span className="al">${(total + 10).toFixed(2)}</span>
                         </div>
+                        <button className="am" onClick={() => navigate('/order')}>Checkout</button>
                     </div>
                 </div>
             </div>
         );
     }
 
-    return (
-        <>
-            {content}
-        </>
-    );
+    return content;
 }
 
 export default Cart;

@@ -25,6 +25,6 @@ export const place_order =  async (req, res) => {
         }
 
         res.json({cart: cart, total: total, orderResult: result});
-        console.log('orderResult', result);
+        // console.log('orderResult', result);
     });
 }

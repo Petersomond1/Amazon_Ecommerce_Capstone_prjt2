@@ -21,8 +21,8 @@ function CheckoutToShipping() {
                 country: form.elements.country.value,
                 phone: form.elements.phone.value
             });
-            console.log(response.data);
-            console.log ('cart', cart, 'total', total);
+            // console.log(response.data);
+            // console.log ('cart', cart, 'total', total);
         } catch (error) {
             console.error(error);
         }

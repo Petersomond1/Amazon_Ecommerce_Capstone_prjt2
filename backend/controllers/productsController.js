@@ -26,7 +26,7 @@ const qu = `SELECT * FROM products WHERE id IN (${placeholders})`;
         const data = await db.query(qu, [...allRowIds]);
         res.status(200).json([data, RowIds]);
     } catch (error) {
-        console.log("the problem is here: ", error.message);
+        // console.log("the problem is here: ", error.message);
     }
 }
 

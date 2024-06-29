@@ -27,7 +27,7 @@ app.use(cors({
     optionsSuccessStatus: 200,
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'UPDATE']
 }));
 
 app.use(express.json());
@@ -72,6 +72,6 @@ app.use((err, req, res, next) => {
 
 // Start the server
 app.listen(5000, () => {
-    console.log(api);
+    // console.log(api);
     console.log('Server started at http://localhost:5000');
 });

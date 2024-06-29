@@ -1,17 +1,87 @@
 import { createProduct, isProductInCart, calculateTotal } from '../utils/commonfunctions.js';
 import db from '../config/db.js';
 
+// Get shopping cart
+export const get_cart = async (req, res) => {
+    try {
+        const query = 'SELECT * FROM cart';
+        const [cartItems] = await db.query(query);
+        const total = await calculateTotal();
+
+        res.json({ cart: cartItems, total });
+    } catch (error) {
+        console.error('An error occurred while fetching the cart:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
 export const add_to_cart = async (req, res) => {
     try {
         const product = createProduct(req);
+        
+        if (!product.id || !product.name || !product.price) {
+            throw new Error("Missing required product information");
+        }
+        
         const isProductAlreadyInCart = await isProductInCart(product.id);
 
         if (isProductAlreadyInCart) {
-            const query = 'UPDATE cart SET quantity_in_stock = quantity_in_stock + 1 WHERE id = ?';
-            await db.query(query, [product.id]);
+            const query = `
+                UPDATE cart 
+                SET 
+                    name = ?,
+                    description = ?,
+                    price = ?,
+                    quantity_in_stock = quantity_in_stock + 1,
+                    image = ?,
+                    video_image = ?,
+                    category = ?,
+                    type = ?,
+                    ratings = ?,
+                    reviews = ?,
+                    prime = ?,
+                    soldby = ?,
+                    featured = ?
+                WHERE id = ?`;
+            await db.query(query, [
+                product.name,
+                product.description,
+                product.price,
+                product.image,
+                product.video_image,
+                product.category,
+                product.type,
+                product.ratings,
+                product.reviews,
+                product.prime,
+                product.soldby,
+                product.featured,
+                product.id
+            ]);
         } else {
-            const query = 'INSERT INTO cart (id, quantity_in_stock, price) VALUES (?, 1, ?)';
-            await db.query(query, [product.id, product.sale_price || product.price]);
+            const price = product.sale_price || product.price;
+            const quantityInStock = product.quantity_in_stock ? product.quantity_in_stock : 1;
+
+            const query = `
+                INSERT INTO cart 
+                (id, name, description, price, quantity_in_stock, image, video_image, category, type, ratings, reviews, prime, soldby, featured) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+            await db.query(query, [
+                product.id,
+                product.name,
+                product.description,
+                price,
+                quantityInStock,
+                product.image,
+                product.video_image,
+                product.category,
+                product.type,
+                product.ratings,
+                product.reviews,
+                product.prime,
+                product.soldby,
+                product.featured
+            ]);
         }
 
         const total = await calculateTotal();
@@ -22,134 +92,152 @@ export const add_to_cart = async (req, res) => {
     }
 };
 
-export const insert_into_cart = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const quantity_InStock = req.body.quantity_in_stock;
-        const cart = req.session.cart || [];
-        const existingProductIndex = cart.findIndex(p => p.id === id);
-
-        if (existingProductIndex >= 0) {
-            cart[existingProductIndex].quantity_in_stock += quantity_InStock;
-        } else {
-            const product = createProduct(req);
-            cart.push({ ...product, quantity_in_stock: quantity_InStock });
-        }
-
-        req.session.cart = cart;
-        const total = await calculateTotal(cart);
-        res.json({ cart: cart, total: total });
-    } catch (error) {
-        console.error("An error occurred while inserting into cart:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
 
 
-export const get_cart = async (req, res) => {
-    try {
-        const query = 'SELECT * FROM cart';
-        const [cartItems] = await db.query(query);
-        const total = await calculateTotal();
+// export const get_everything_from_cart = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const query = 'SELECT * FROM cart WHERE id = ?';
+//         const [result] = await db.query(query, [id]);
+//         res.json(result);
+//     } catch (error) {
+//         console.error('An error occurred while fetching the cart item:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
 
-        console.log('Cart Items at get_cart:', cartItems);
-        console.log('Total get_cart:', total);
+// export const fetch_cart_and_total = async (req, res) => {
+//     try {
+//         const cart = await db.query('SELECT * FROM cart');
+//         const total = await calculateTotal();
+//         res.json({ cart: cart, total: total });
+//     } catch (error) {
+//         console.error('Error fetching cart and total:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 
-        res.json({ cart: cartItems, total });
-    } catch (error) {
-        console.error('An error occurred while fetching the cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
+// export const insert_into_cart = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const quantity_InStock = req.body.quantity_in_stock;
+//         const cart = req.session.cart || [];
+//         const existingProductIndex = cart.findIndex(p => p.id === id);
 
-export const remove_product = async (req, res) => {
-    try {
-        const id = req.body.id;
-        const cart = req.session.cart;
-        for (let i = 0; i < cart.length; i++) {
-            if (cart[i].id === id) {
-                cart.splice(i, 1);
-                break;
-            }
-        }
-        req.session.cart = cart;
-        const total = await calculateTotal(cart);
-        res.json({ cart: cart, total: total });
-    } catch (error) {
-        console.error("An error occurred while removing product from cart:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-};
+//         if (existingProductIndex >= 0) {
+//             cart[existingProductIndex].quantity_in_stock += quantity_InStock;
+//         } else {
+//             const product = createProduct(req);
+//             cart.push({ ...product, quantity_in_stock: quantity_InStock });
+//         }
 
-export const get_everything_from_cart = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const query = 'SELECT * FROM cart WHERE id = ?';
-        const [result] = await db.query(query, [id]);
-        res.json(result);
-    } catch (error) {
-        console.error('An error occurred while fetching the cart item:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
+//         req.session.cart = cart;
+//         const total = await calculateTotal(cart);
+//         res.json({ cart: cart, total: total });
+//     } catch (error) {
+//         console.error("An error occurred while inserting into cart:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
 
-export const update_quantity_in_cart = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { quantity_in_stock } = req.body;
-        const query = 'UPDATE cart SET quantity_in_stock = ? WHERE id = ?';
-        const [result] = await db.query(query, [quantity_in_stock, id]);
-        res.json(result);
-    } catch (error) {
-        console.error('An error occurred while updating the cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
 
-export const delete_from_cart = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const query = 'DELETE FROM cart WHERE id = ?';
-        const [result] = await db.query(query, [id]);
-        res.json(result);
-    } catch (error) {
-        console.error('An error occurred while deleting from the cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
 
-export const update_cart_from_order = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const query = 'UPDATE cart SET status = "ordered" WHERE id = ?';
-        const [result] = await db.query(query, [id]);
-        res.json(result);
-    } catch (error) {
-        console.error('An error occurred while updating the cart from order:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
+// export const remove_product = async (req, res) => {
+//     try {
+//         const id = req.body.id;
+//         const cart = req.session.cart;
+//         for (let i = 0; i < cart.length; i++) {
+//             if (cart[i].id === id) {
+//                 cart.splice(i, 1);
+//                 break;
+//             }
+//         }
+//         req.session.cart = cart;
+//         const total = await calculateTotal(cart);
+//         res.json({ cart: cart, total: total });
+//     } catch (error) {
+//         console.error("An error occurred while removing product from cart:", error);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// };
+// export const remove_from_cart = async (req, res) => {
+//     try {
+//         const { id } = req.params;
 
-export const update_product_quantity_in_cart = async (req, res) => {
-    try {
-        const { id, quantity_in_stock } = req.body;
-        const query = 'UPDATE cart SET quantity_in_stock = ? WHERE id = ?';
-        const [result] = await db.query(query, [quantity_in_stock, id]);
-        res.json({ success: true });
-    } catch (error) {
-        console.error('An error occurred while updating product quantity in cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
+//         const query = 'DELETE FROM cart WHERE id = ?';
+//         await db.query(query, [id]);
 
-export const updates_status_of_product_in_cart = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const query = 'UPDATE cart SET status = "ordered" WHERE id = ?';
-        const [result] = await db.query(query, [id]);
-        res.json(result);
-    } catch (error) {
-        console.error('An error occurred while updating the status of the product in the cart:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
+//         const total = await calculateTotal();
+//         res.json({ id: id, total: total });
+//     } catch (error) {
+//         console.error('Error removing item from cart:', error);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
+
+
+
+
+// export const update_quantity_in_cart = async (req, res) => {
+//     try {
+//       const { id } = req.params;
+//       const { quantity_in_stock } = req.body;
+  
+//       const query = 'UPDATE cart SET quantity_in_stock = ? WHERE id = ?';
+//       await db.query(query, [quantity_in_stock, id]);
+  
+//       const total = await calculateTotal();
+//       res.json({ id: id, quantity_in_stock: quantity_in_stock, total: total });
+//     } catch (error) {
+//       console.error('Error updating quantity in cart:', error);
+//       res.status(500).send('Internal Server Error');
+//     }
+//   };
+
+// export const delete_from_cart = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const query = 'DELETE FROM cart WHERE id = ?';
+//         const [result] = await db.query(query, [id]);
+//         res.json(result);
+//     } catch (error) {
+//         console.error('An error occurred while deleting from the cart:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+// export const update_cart_from_order = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const query = 'UPDATE cart SET status = "ordered" WHERE id = ?';
+//         const [result] = await db.query(query, [id]);
+//         res.json(result);
+//     } catch (error) {
+//         console.error('An error occurred while updating the cart from order:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+// export const update_product_quantity_in_cart = async (req, res) => {
+//     try {
+//         const { id, quantity_in_stock } = req.body;
+//         const query = 'UPDATE cart SET quantity_in_stock = ? WHERE id = ?';
+//         const [result] = await db.query(query, [quantity_in_stock, id]);
+//         res.json({ success: true });
+//     } catch (error) {
+//         console.error('An error occurred while updating product quantity in cart:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
+
+// export const updates_status_of_product_in_cart = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const query = 'UPDATE cart SET status = "ordered" WHERE id = ?';
+//         const [result] = await db.query(query, [id]);
+//         res.json(result);
+//     } catch (error) {
+//         console.error('An error occurred while updating the status of the product in the cart:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
