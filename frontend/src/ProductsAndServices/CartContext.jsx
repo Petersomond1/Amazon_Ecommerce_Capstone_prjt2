@@ -24,13 +24,30 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = async (product) => {
     try {
-      const response = await axios.post('http://localhost:5000/api/cart/add_to_cart', { product });
-      setCart(response.data.cart || []);
-      setTotal(response.data.total);
+      const cartProduct = cart.find(cartItem => cartItem.id === product.id);
+      if (cartProduct) {
+        // If the product is already in the cart, increment the quantity
+        await updateQuantityInCart(product.id, cartProduct.quantity_in_stock + 1);
+      } else {
+        // If the product is not in the cart, add it with quantity 1
+        const response = await axios.post('http://localhost:5000/api/cart/add_to_cart', { product });
+        setCart(response.data.cart || []);
+        setTotal(response.data.total);
+      }
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
   };
+
+  // const addToCart = async (product) => {
+  //   try {
+  //     const response = await axios.post('http://localhost:5000/api/cart/add_to_cart', { product });
+  //     setCart(response.data.cart || []);
+  //     setTotal(response.data.total);
+  //   } catch (error) {
+  //     console.error('Error adding to cart:', error);
+  //   }
+  // };
 
   const updateQuantityInCart = async (id, newQuantity) => {
     if (isNaN(newQuantity) || newQuantity < 1) return;
@@ -43,6 +60,18 @@ export const CartProvider = ({ children }) => {
       console.error('Error updating quantity in cart:', error);
     }
   };
+
+  // const updateQuantityInCart = async (id, newQuantity) => {
+  //   if (isNaN(newQuantity) || newQuantity < 1) return;
+  //   console.log('newQuantity', newQuantity);
+  //   try {
+  //     const response = await axios.put(`http://localhost:5000/api/cart/update_quantity/${id}`, { newQuantity });
+  //     setCart(response.data.cart || []);
+  //     setTotal(response.data.total);
+  //   } catch (error) {
+  //     console.error('Error updating quantity in cart:', error);
+  //   }
+  // };
 
   const removeFromCart = async (id) => {
     try {
