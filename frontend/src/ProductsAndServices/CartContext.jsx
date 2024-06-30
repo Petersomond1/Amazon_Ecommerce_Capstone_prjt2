@@ -14,7 +14,7 @@ export const CartProvider = ({ children }) => {
   const fetchCartAndTotalFromBackend = async () => {
     try {
       const response = await axios.get('http://localhost:5000/api/cart');
-      setCart(response.data.cart);
+      setCart(response.data.cart || []);
       const totalValue = Number(response.data.total);
       setTotal(isNaN(totalValue) ? 0 : totalValue);
     } catch (error) {
@@ -25,7 +25,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = async (product) => {
     try {
       const response = await axios.post('http://localhost:5000/api/cart/add_to_cart', { product });
-      setCart(response.data.cart);
+      setCart(response.data.cart || []);
       setTotal(response.data.total);
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -33,9 +33,11 @@ export const CartProvider = ({ children }) => {
   };
 
   const updateQuantityInCart = async (id, newQuantity) => {
+    if (isNaN(newQuantity) || newQuantity < 1) return;
+    console.log('newQuantity', newQuantity);
     try {
-      const response = await axios.put(`http://localhost:5000/api/cart/${id}`, { quantity_in_stock: newQuantity }, { withCredentials: true });
-      setCart(response.data.cart);
+      const response = await axios.put(`http://localhost:5000/api/cart/update_quantity/${id}`, { newQuantity });
+      setCart(response.data.cart || []);
       setTotal(response.data.total);
     } catch (error) {
       console.error('Error updating quantity in cart:', error);
@@ -44,9 +46,8 @@ export const CartProvider = ({ children }) => {
 
   const removeFromCart = async (id) => {
     try {
-      const response = await axios.delete(`http://localhost:5000/api/cart/${id}`, { withCredentials: true });
-      setCart(response.data.cart);
-      setTotal(response.data.total);
+      await axios.delete(`http://localhost:5000/api/cart/remove/${id}`);
+      fetchCartAndTotalFromBackend();
     } catch (error) {
       console.error('Error removing item from cart:', error);
     }
@@ -58,10 +59,10 @@ export const CartProvider = ({ children }) => {
       setCart,
       total,
       setTotal,
-      fetchCartAndTotalFromBackend,
       addToCart,
-      updateQuantityInCart,
       removeFromCart,
+      updateQuantityInCart,
+      fetchCartAndTotalFromBackend
     }}>
       {children}
     </CartContext.Provider>

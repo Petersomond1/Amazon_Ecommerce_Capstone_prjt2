@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import axios from 'axios';
 
 function Cart() {
-    const { cart, setCart, total, setTotal, removeFromCart, updateQuantityInCart, fetchCartAndTotalFromBackend } = useContext(CartContext);
+    const { cart, setCart, total, setTotal, removeFromCart, updateQuantityInCart } = useContext(CartContext);
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -17,7 +17,6 @@ function Cart() {
 
     const { data, status } = useQuery("cart", getCart, {
         onSuccess: (data) => {
-            // console.log('Cart Data:', data);
             setCart(data.cart);
             const totalValue = Number(data.total);
             setTotal(isNaN(totalValue) ? 0 : totalValue);
@@ -30,33 +29,26 @@ function Cart() {
         }
     }, [status, data]);
 
-    // const handleInc = async (event, id) => {
-    //     event.preventDefault();
-    //     const product = cart.find(product => product.id === id);
-    //     if (product) {
-    //         await updateQuantityInCart(id, product.quantity_in_stock + 1);
-    //     }
-    // };
+    const handleInc = async (event, id) => {
+        event.preventDefault();
+        const product = cart.find(product => product.id === id);
+        if (product) {
+            await updateQuantityInCart(id, product.quantity_in_stock + 1);
+        }
+    };
 
-    // const handleDec = async (event, id) => {
-    //     event.preventDefault();
-    //     const product = cart.find(product => product.id === id);
-    //     if (product && product.quantity_in_stock > 1) {
-    //         await updateQuantityInCart(id, product.quantity_in_stock - 1);
-    //     }
-    // };
+    const handleDec = async (event, id) => {
+        event.preventDefault();
+        const product = cart.find(product => product.id === id);
+        if (product && product.quantity_in_stock > 1) {
+            await updateQuantityInCart(id, product.quantity_in_stock - 1);
+        }
+    };
 
-    // const handleRemove = async (event, id) => {
-    //     event.preventDefault();
-    //     await removeFromCart(id);
-    // };
-
-    // const handleChangeQuantity = async (event, id) => {
-    //     const newQuantity = parseInt(event.target.value);
-    //     if (newQuantity > 0) {
-    //         await updateQuantityInCart(id, newQuantity);
-    //     }
-    // };
+    const handleRemove = async (event, id) => {
+        event.preventDefault();
+        await removeFromCart(id);
+    };
 
     let content;
 
@@ -91,11 +83,11 @@ function Cart() {
                                 </div>
                                 <div className="r">
                                     <button className="s" onClick={(event) => handleDec(event, product.id)}>-</button>
-                                    <input className="t" type="text" value={product.quantity_in_stock} onChange={(event) => handleChangeQuantity(event, product.id)} />
+                                    <input className="t" type="text" value={product.quantity_in_stock} readOnly />
                                     <button className="u" onClick={(event) => handleInc(event, product.id)}>+</button>
                                 </div>
-                                <div className="x">${product.price}</div>
-                                <span className="y">${(product.price * product.quantity_in_stock).toFixed(2)}</span>
+                                <div className="x">${Number(product.price).toFixed(2)}</div>
+                                <span className="y">${(Number(product.price) * Number(product.quantity_in_stock)).toFixed(2)}</span>
                             </div>
                         ))}
                         <Link to={'/'} className="z"> Continue Shopping </Link>
@@ -104,7 +96,7 @@ function Cart() {
                         <h1 className="ac">Order Summary</h1>
                         <div className="ad">
                             <span className="ae">Products {cart.length}</span>
-                            <span className="af">${(total || 0).toFixed(2)}</span>
+                            <span className="af">${Number(total).toFixed(2)}</span>
                         </div>
                         <div>
                             <label className="ag">Shipping</label>
@@ -119,7 +111,7 @@ function Cart() {
                         </div>
                         <div className="ak">
                             <span className="al">Total Cost</span>
-                            <span className="al">${(total + 10).toFixed(2)}</span>
+                            <span className="al">${(Number(total) + 10).toFixed(2)}</span>
                         </div>
                         <button className="am" onClick={() => navigate('/order')}>Checkout</button>
                     </div>

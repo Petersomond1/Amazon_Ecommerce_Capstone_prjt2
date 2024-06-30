@@ -1,18 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useParams } from "react-router-dom";
 import "./productsandservices_display_row_2.css";
 import UseFetchProducts from "./useFetchProducts.js";
-// import axios from "axios";
-import { useContext } from 'react';
 import { CartContext } from './CartContext';
 
 const ProductsAndServices_SingleDisplay = () => {
   const { id } = useParams();
   const { data, isLoading, error } = UseFetchProducts();
-  const { addToCart, updateQuantityInCart } = useContext(CartContext);
+  const { addToCart, updateQuantityInCart, cart } = useContext(CartContext);
 
   const products = data ? data[0][0] : null;
   const product = products ? products.find(product => product.id === Number(id)) : null;
+  const cartProduct = cart ? cart.find(cartItem => cartItem.id === product?.id) : null;
 
   if (isLoading) return <div style={{color: 'black'}}>Loading...</div>;
   if (error) return <div style={{color: 'black'}}>An error occurred: {error.message}</div>;
@@ -28,35 +27,31 @@ const ProductsAndServices_SingleDisplay = () => {
   };
 
   const handleInc = async (event) => {
-    // try {
-    //   const response1 = await axios.put(`http://localhost:5000/api/add_to_cart/${product.id}`, { product }, { withCredentials: true });
-    //   await updateQuantityInCart(product.id, product.quantity_in_stock + 1);
-    // } catch (error) {
-    //   console.error("An error occurred while increasing quantity:", error);
-    // }
+    event.preventDefault();
+    try {
+      const currentQuantity = cartProduct ? cartProduct.quantity_in_stock : 0;
+      console.log('Current cartProduct:', cartProduct);
+      console.log('Current quantity before increment:', currentQuantity);
+      await updateQuantityInCart(product.id, currentQuantity + 1);
+    } catch (error) {
+      console.error("An error occurred while increasing quantity:", error);
+    }
   };
 
   const handleDec = async (event) => {
-    // try {
-    //   const response2 = await axios.put(`http://localhost:5000/api/add_to_cart/${product.id}`, { product }, { withCredentials: true });
-    //   await updateQuantityInCart(product.id, product.quantity_in_stock - 1);
-    // } catch (error) {
-    //   console.error("An error occurred while decreasing quantity:", error);
-    // }
+    event.preventDefault();
+    try {
+      const currentQuantity = cartProduct ? cartProduct.quantity_in_stock : 0;
+      console.log('Current cartProduct:', cartProduct);
+      console.log('Current quantity before decrement:', currentQuantity);
+      if (currentQuantity > 1) {
+        await updateQuantityInCart(product.id, currentQuantity - 1);
+      }
+    } catch (error) {
+      console.error("An error occurred while decreasing quantity:", error);
+    }
   };
 
-  const handleChangeQuantity = async (event) => {
-    // const quantity = parseInt(event.target.value, 10);
-    // if (quantity > 0) {
-    //   try {
-    //     await updateQuantityInCart(product.id, quantity);
-    //   } catch (error) {
-    //     console.error("An error occurred while changing quantity:", error);
-    //   }
-    // }
-  };
-
-  // Render the product details
   return (
     <div className="container_row_2_cardsx4">
       <div key={product.id}>
@@ -68,12 +63,9 @@ const ProductsAndServices_SingleDisplay = () => {
           <div>
             <h3>{product.name}</h3>
           </div>
+          <button onClick={handleDec}>-</button>
           <button onClick={AddToCart}>AddToCart</button>
-          <div>
-            <button onClick={handleDec}>-</button>
-            <input type="number" value={product.quantity_in_stock} onChange={handleChangeQuantity} />
-            <button onClick={handleInc}>+</button>
-          </div>
+          <button onClick={handleInc}>+</button>
         </div>
       </div>
     </div>
