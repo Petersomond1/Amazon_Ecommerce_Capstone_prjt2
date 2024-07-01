@@ -13,7 +13,7 @@ import usersRouter from './routes/users.js';
 import paymentRouter from './routes/payment.js';
 import authenticateToken from './middleware/auth.js';
 import cookieParser from 'cookie-parser';
-import { users_register_post } from './controllers/users.js';
+// import { users_register_post } from './controllers/users.js';
 
 
 // Load environment variables from .env file
@@ -54,7 +54,7 @@ app.use('/api/protected', authenticateToken, (req, res) => {
 });
 
 
-app.post('/api/users/register', users_register_post);
+// app.post('/api/users/register', users_register_post);
 
 // Middleware to set Content-Type for API responses
 // const setJsonContentType = (req, res, next) => {
