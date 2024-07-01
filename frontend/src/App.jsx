@@ -1,6 +1,7 @@
+// src/App.jsx
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider, useQuery } from "react-query";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 import Navbarup from "./Navbarup/Navbarup";
 import AppLayout from "./AppLayout";
@@ -22,14 +23,12 @@ import Payment from "./ProductsAndServices/Payment.jsx";
 import AdminDashboard from "./ProductsAndServices/AdminDashboard";
 import ProductsAndServices_SingleDisplay from "./ProductsAndServices/ProductsAndServices_SingleDisplay";
 import ProductsAndServices_CategoryDisplay from "./ProductsAndServices/ProductsAndServices_CategoryDisplay";
-
+import Login from "./Login.jsx";
+import Register from "./Register.jsx"; // Make sure you have these components
 
 const queryClient = new QueryClient();
 
 function App() {
-  // const isAdmin = checkIfUserIsAdmin();
-  const isAdmin = true;
-
   return (
     <CartProvider>
       <QueryClientProvider client={queryClient}>
@@ -38,58 +37,26 @@ function App() {
           <Navbardown />
           <Routes>
             <Route element={<AppLayout />}></Route>
-            <Route
-              path="/"
-              element={<ProductsAndServices_Display_Connect />}
-            ></Route>
-            <Route
-              path="/allproducts"
-              element={<AllProductsAndServices_Display />}
-            ></Route>
-            <Route
-              path="/admindashboard"
-              element={
-                <PrivateRoute isAdmin={isAdmin}>
-                  {" "}
-                  <AdminDashboard />{" "}
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/ProductsAndServices_Display_Row_1_Carousel_Listing"
-              element={<ProductsAndServices_Display_Row_1_Carousel_Listing  />}
-            ></Route>
-            <Route
-              path="/ProductsAndServices_Display_Row_2_Listing/:category"
-              element={<ProductsAndServices_Display_Row_2_Listing />}
-            ></Route>
-            <Route
-              path="/ProductsAndServices_Display_Row_3_Listing"
-              element={<ProductsAndServices_Display_Row_3_Listing />}
-            ></Route>
-            <Route
-              path="/ProductsAndServices_Display_Row_4_Listing"
-              element={<ProductsAndServices_Display_Row_4_Listing />}
-            ></Route>
-            <Route
-              path="/ProductsAndServices_Display_Row_5_Listing"
-              element={<ProductsAndServices_Display_Row_5_Listing />}
-            ></Route>
-            <Route
-              path="/ProductsAndServices_Display_Row_6_Listing"
-              element={
-                <ProductsAndServices_Display_Row_6_Listing />
-              }
-            ></Route>
-            <Route path="/ProductsAndServices_SingleDisplay/:id" element={<ProductsAndServices_SingleDisplay/>}></Route>
-            <Route path="/ProductsAndServices_CategoryDisplay/:category" element={<ProductsAndServices_CategoryDisplay/>}></Route>
-           
+            <Route path="/" element={<ProductsAndServices_Display_Connect />}></Route>
+            <Route path="/allproducts" element={<AllProductsAndServices_Display />}></Route>
+            <Route path="/admindashboard" element={
+              <PrivateRoute>
+                <AdminDashboard />
+              </PrivateRoute>
+            }/>
+            <Route path="/ProductsAndServices_Display_Row_1_Carousel_Listing" element={<ProductsAndServices_Display_Row_1_Carousel_Listing />}></Route>
+            <Route path="/ProductsAndServices_Display_Row_2_Listing/:category" element={<ProductsAndServices_Display_Row_2_Listing />}></Route>
+            <Route path="/ProductsAndServices_Display_Row_3_Listing" element={<ProductsAndServices_Display_Row_3_Listing />}></Route>
+            <Route path="/ProductsAndServices_Display_Row_4_Listing" element={<ProductsAndServices_Display_Row_4_Listing />}></Route>
+            <Route path="/ProductsAndServices_Display_Row_5_Listing" element={<ProductsAndServices_Display_Row_5_Listing />}></Route>
+            <Route path="/ProductsAndServices_Display_Row_6_Listing" element={<ProductsAndServices_Display_Row_6_Listing />}></Route>
+            <Route path="/ProductsAndServices_SingleDisplay/:id" element={<ProductsAndServices_SingleDisplay />}></Route>
+            <Route path="/ProductsAndServices_CategoryDisplay/:category" element={<ProductsAndServices_CategoryDisplay />}></Route>
             <Route path="/api/cart" element={<Cart />}></Route>
-            <Route
-              path="/api/checkouttoshipping"
-              element={<CheckoutToShipping />}
-            ></Route>
+            <Route path="/api/checkouttoshipping" element={<CheckoutToShipping />}></Route>
             <Route path="/api/payment" element={<Payment />}></Route>
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/register" element={<Register />}></Route>
           </Routes>
           <Footer />
         </BrowserRouter>

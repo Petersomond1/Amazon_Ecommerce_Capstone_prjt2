@@ -11,6 +11,8 @@ import cartRouter from './routes/cart.js';
 import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
 import paymentRouter from './routes/payment.js';
+import authenticateToken from './middleware/auth.js';
+
 
 // Load environment variables from .env file
 dotenv.config();
@@ -39,6 +41,11 @@ app.use(session({
     cookie: { secure: false } // set to true if your website uses HTTPS
 }));
 
+// Protect routes with authenticateToken middleware
+app.use('/api/protected', authenticateToken, (req, res) => {
+    res.json({ message: 'This is a protected route' });
+});
+
 // Middleware to set Content-Type for API responses
 // const setJsonContentType = (req, res, next) => {
 //     res.setHeader('Content-Type', 'application/json');
@@ -54,6 +61,9 @@ app.use((req, res, next) => {
 });
 
 // Route configurations
+
+// app.use('/api/users', usersRouter);
+
 app.use('/api', productsRouter);
 app.use('/api', cartRouter);
 app.use('/api', ordersRouter);

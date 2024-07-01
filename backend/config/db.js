@@ -1,6 +1,5 @@
 import mysql from 'mysql2/promise';
 
-// Create the database connection pool
 const db = mysql.createPool({
     host: 'localhost',
     user: process.env.DB_USER || 'root',
@@ -8,7 +7,6 @@ const db = mysql.createPool({
     database: process.env.DB_NAME || 'amazon_ecommerce_mysqldb'
 });
 
-// Test the database connection
 (async () => {
     try {
         const connection = await db.getConnection();
