@@ -11,22 +11,17 @@ const PrivateRoute = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('No token');
-
-        await axios.get('http://localhost:5000/api/protected', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        setIsAuthenticated(true);
-      } catch (error) {
-        console.error('Not authenticated:', error);
-        navigate('/');
-      }
+        try {
+            await axios.get('http://localhost:5000/api/protected', { withCredentials: true });
+            setIsAuthenticated(true);
+        } catch (error) {
+            console.error('Not authenticated:', error);
+            navigate('/');
+        }
     };
 
     checkAuth();
-  }, [navigate]);
+}, [navigate]);
 
   if (!isAdmin) {
     navigate('/');

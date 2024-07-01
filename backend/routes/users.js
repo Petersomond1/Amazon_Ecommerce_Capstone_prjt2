@@ -18,4 +18,10 @@ router.get('/protected', authenticateToken, (req, res) => {
     res.json({ message: 'This is a protected route' });
 });
 
+router.post('/api/users/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Logged out successfully' });
+});
+
+
 export default router;

@@ -12,6 +12,7 @@ import ordersRouter from './routes/orders.js';
 import usersRouter from './routes/users.js';
 import paymentRouter from './routes/payment.js';
 import authenticateToken from './middleware/auth.js';
+import cookieParser from 'cookie-parser';
 
 
 // Load environment variables from .env file
@@ -23,6 +24,10 @@ const __dirname = dirname(__filename);
 const app = express();
 const api = process.env.API_URL;
 
+
+
+
+
 // Middleware configurations
 app.use(cors({
     origin: ['http://localhost:5173', 'http://localhost:5000'],
@@ -32,6 +37,7 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'UPDATE']
 }));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(session({
