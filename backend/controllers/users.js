@@ -1,11 +1,10 @@
 import db from "../config/db.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-// import { createUser, findUserByUsername } from '../models/User.js';
-
+import { createUser } from '../models/User.js';
 
 export const addRowsIds = async (req, res) => {
-    const rows = req.body; // Assuming 'rows' is an array of strings as you mentioned
+    const rows = req.body;
     if (!rows || !Array.isArray(rows)) {
         return res.status(400).json({ error: 'Invalid data format' });
     }
@@ -14,14 +13,11 @@ export const addRowsIds = async (req, res) => {
 
     try {
         await Promise.all(rows.map(async (numbers, index) => {
-            const id = index + 1; // Assuming idstofeature table IDs start from 1 and increment
+            const id = index + 1;
 
-            // Convert numbers string to array of integers
             const numbersArray = numbers.split(',').map(numStr => parseInt(numStr.trim()));
 
-            // Execute the update query
             await db.query(updateQuery, [JSON.stringify(numbersArray), id]);
-            // console.log(`Updated row with id from controllers/users: ${id}`);
         }));
 
         res.status(200).json({ message: "Data updated" });
@@ -49,6 +45,7 @@ export const users_login_post = async (req, res) => {
 
 export const users_register_post = async (req, res) => {
     try {
+        console.log('Received registration data:', req.body); // Log incoming data
         await createUser(req.body);
         res.status(201).json({ message: 'User registered successfully' });
     } catch (error) {
@@ -56,20 +53,3 @@ export const users_register_post = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 };
-
-// const login = async (req, res) => {
-//     try {
-//         const user = await findUserByUsername(req.body.username);
-//         if (!user || !await bcrypt.compare(req.body.password, user.password)) {
-//             return res.status(401).json({ error: 'Invalid credentials' });
-//         }
-
-//         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-//         res.json({ token });
-//     } catch (error) {
-//         console.error('Error logging in user:', error);
-//         res.status(500).json({ error: 'Internal server error' });
-//     }
-// };
-
-// export { register, login };

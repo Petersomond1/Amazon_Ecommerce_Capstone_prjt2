@@ -1,4 +1,3 @@
-// src/components/PrivateRoute.jsx
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -21,7 +20,7 @@ const PrivateRoute = ({ children }) => {
     };
 
     checkAuth();
-}, [navigate]);
+  }, [navigate]);
 
   if (!isAdmin) {
     navigate('/');
